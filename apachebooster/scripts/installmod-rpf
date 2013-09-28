@@ -7,11 +7,17 @@
 CUDIR=`pwd`
 cd /usr/local/src
 rm -rf mod_rpaf*
-wget -c  http://prajith.in/downloads/mod_rpaf.tar.gz
-tar -xzf mod_rpaf.tar.gz
+wget -c  http://prajith.in/downloads/mod_rpaf_patch.tar.gz
+tar -xzf mod_rpaf_patch.tar.gz
 cd mod_rpaf/
+HTTPD_VER=`/usr/local/apache/bin/httpd -v| grep "Server version:"|cut -d "/" -f2|awk '{print $1}'|cut -d "." -f1,2`
 
-/usr/local/apache/bin/apxs -cia mod_rpaf-2.0.c
+if [ "$HTTPD_VER" != "2.4" ]; then
+   /usr/local/apache/bin/apxs -cia mod_rpaf-2.0.c
+else
+   /usr/local/apache/bin/apxs -cia mod_rpaf-patch.c
+fi
+
 if grep "mod_rpaf.conf"  /usr/local/apache/conf/includes/pre_main_global.conf ; then
 if [ -f "/usr/local/apache/conf/mod_rpaf.conf" ]; then
 rm -rf /usr/local/apache/conf/mod_rpaf.conf

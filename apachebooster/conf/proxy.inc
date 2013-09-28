@@ -9,11 +9,11 @@ proxy_temp_file_write_size 64k;
 proxy_pass_header Set-Cookie;
 proxy_redirect     off;
 proxy_hide_header  Vary;
-proxy_hide_header  X-Powered-By;
+proxy_hide_header  X-Powered-By; 
 proxy_set_header   Accept-Encoding '';
-#If you want to get the cache-control and expire headers from apache, comment out 'proxy_ignore_headers' and uncomment 'proxy_pass_header Expires;' and 'proxy_pass_header Cache-Control'
+#If you want to get the cache-control and expire headers from apache, comment out 'proxy_ignore_headers' and uncomment 'proxy_pass_header Expires;' and 'proxy_pass_header Cache-Control
 #proxy_pass_header Expires;
-#proxy_pass_header Cache-Control;
+#proxy_pass_header Cache-Control; 
 proxy_ignore_headers Cache-Control Expires;
 proxy_set_header   Referer $http_referer;
 proxy_set_header   Host   $host;

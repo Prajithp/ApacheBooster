@@ -1,0 +1,136 @@
+body{
+font-family: Verdana, Arial, Helvetica, sans-serif;
+font-size: .75em;
+}
+#mbody{
+background-image: url('./images/bg.gif');
+background-repeat: repeat-x;
+height:30px;
+}
+img{
+  border-style: none;
+}
+a{
+text-decoration: none;
+color: orange;
+}
+
+.headcontent { 
+	top: 0;
+	left: 0;
+	color: orange;
+	font-size: 1.0em;
+	width: 100%;
+	height: 20px;
+}
+.headcontent a:link a:visited a:active a:hover  {
+	color: #C2D8E1;
+	text-decoration: none;
+}
+.menu{
+	clear:both;
+	font-size: 1.1em;
+        color: orange;
+        text-align: center;
+       	height:30px;
+	width: 100%;
+	padding-left: 20px;
+	padding-top: 5px;
+}
+
+.menu a:hover {
+	color: orange;
+
+}
+.content {
+  margin-top: 100px;
+  padding-left: 20px;
+  text-align: justify;
+  font-size: 1.0em;
+  width: 800px;
+  
+}
+.content1 {
+  padding-left: 10px;
+  text-align: justify;
+  font-size: 1.0em;
+  width: 800px;
+  
+}
+.content2 {
+  padding-left: 20px;
+  padding-top: 10px;
+  text-align: justify;
+  font-size: 1.0em;
+  width: 700px;
+  margin-left: 10px;
+}
+.content3 {
+        padding-left: 20px;
+        font-size: 1.0em;
+        text-align: justify;
+        width: 258px;
+}
+
+
+.content h1 {
+	font-size: 1.3em;
+	font-weight: bold;
+}
+.content p {
+	line-height: 1.4;
+	padding-left: 20px;
+}
+.footer{
+	margin-top: 60px;
+	padding-top: 60px;
+	line-height: 1.5em;
+	text-align: center;
+	font-size: 1.0em;
+	color: #888888;
+	clear: both;
+
+}
+input, .input, select, .select, textarea, .textarea {
+	font-family: Helvetica,Tahoma,Verdana,Arial,Sans Serif;
+	font-size: 12px;
+	color: #055A78;
+	font-weight: normal;
+	background-color: #FFFFFF;
+	border: 2px #C2D5DC solid;
+	padding: 2px;
+	-moz-border-radius: 0.5em;
+	-webkit-border-radius: 5px;
+	outline: none;
+	border-radius: 0.5em;
+}
+
+input:focus, .input:focus, select:focus, .select:focus, textarea:focus, .textarea:focus {
+  background-color: #EBF3F6;
+  border: 2px #C2D5DC solid;
+  padding: 1px;
+}
+#contentimg{
+        height: 100px;
+        width: 140px;
+        float: left;
+        color: black;
+        text-decoration: none;
+        font-size: 11px;
+        text-align:center;
+        }
+
+#contentimg a{
+        color: #055A78;
+        text-decoration: none;
+        font-size: 11px;
+        font-family: sans-serif;
+}
+
+
+
+
+.legend {
+font-size: 0.7em;
+}
+

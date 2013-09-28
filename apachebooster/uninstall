@@ -5,8 +5,17 @@ ps aux|grep nginx|grep -v grep|awk '{print $2}'|xargs kill -9
 /scripts/preeasyapache
 rm -rf /usr/local/nginx/
 rm -rf /usr/local/varnish/
-rm -rvf /usr/local/cpanel/whostmgr/cgi/addon_nginx.cgi
-rm -rvf /usr/local/cpanel/whostmgr/cgi/nginx
+
+if [ -f "/usr/local/cpanel/whostmgr/cgi/addon_nginx.cgi" ]; then
+   rm -rvf /usr/local/cpanel/whostmgr/cgi/addon_nginx.cgi
+   rm -rvf /usr/local/cpanel/whostmgr/cgi/nginx
+fi
+
+if [ -f "/usr/local/cpanel/whostmgr/cgi/addon_ApacheBooster.cgi" ]; then
+   rm -rvf /usr/local/cpanel/whostmgr/cgi/addon_ApacheBooster.cgi
+   rm -rvf /usr/local/cpanel/whostmgr/cgi/ApacheBooster
+fi
+#BEGIN scripts section
 rm -rvf /scripts/postwwwacct
 rm -rvf /scripts/installmod-rpf
 rm -rvf /scripts/installnginx
@@ -14,15 +23,14 @@ rm -rvf /scripts/posteasyapache
 rm -rvf /scripts/preeasyapache
 rm -rvf /scripts/rebuildnginxconf
 rm -rvf /scripts/rebuildvhost
-rm -rvf /etc/ini.d/nginx
-rm -rf /etc/init.d/varnish
+rm -rvf /etc/init.d/nginx
+rm -rvf /etc/init.d/varnish
 rm -rvf /etc/sysconfig/varnish
 rm -rvf /scripts/genevarnishconf
 rm -rvf /scripts/purgecache
 rm -rvf /scripts/purgedomains.php
 rm -rvf /scripts/getfilettl
 rm -rvf /scripts/adjustwrap
-rm -rvf /scripts/rebuildvhost-bak
 rm -rvf /scripts/varnishurlexlude
 rm -rvf /scripts/prekillacct
 rm -rvf /scripts/whmapi.pl
@@ -31,22 +39,41 @@ rm -rvf /scripts/createvhost.pl
 rm -rvf /scripts/ApacheBooster.pm
 rm -rvf /scripts/restartsrv_varnish
 rm -rvf /scripts/csf_fix.pl
-               rm -rvf /usr/local/cpanel/hooks/addondomain/addaddondomain
-               rm -rvf /usr/local/cpanel/hooks/subdomain/addsubdomain
-               rm -rvf /usr/local/cpanel/hooks/addondomain/deladdondomain
-               rm -rvf /usr/local/cpanel/hooks/subdomain/delsubdomain
-               rm -rvf /usr/local/cpanel/hooks/park/park
-               rm -rvf /usr/local/cpanel/hooks/park/unpark
+rm -rvf /scripts/after_apache_make_install
+#END scripts section
+
+#BEGIN hooks
+rm -rvf /usr/local/cpanel/hooks/addondomain/addaddondomain
+rm -rvf /usr/local/cpanel/hooks/subdomain/addsubdomain
+rm -rvf /usr/local/cpanel/hooks/addondomain/deladdondomain
+rm -rvf /usr/local/cpanel/hooks/subdomain/delsubdomain
+rm -rvf /usr/local/cpanel/hooks/park/park
+rm -rvf /usr/local/cpanel/hooks/park/unpark
 /usr/local/cpanel/bin/register_hooks
+if [ -e "/usr/local/cpanel/bin/unregister_appconfig" ]; then
+    /usr/local/cpanel/bin/unregister_appconfig ApacheBooster
+else
+    if [ -f "/var/cpane/apps/ApacheBooster.conf" ]; then
+        rm -rf /var/cpane/apps/ApacheBooster.conf
+    fi
+fi
+#END hooks
+
+#BEGIN Apache Conf
 sed -i  's/apache_port=0.0.0.0:82/apache_port=0.0.0.0:80/g'  /var/cpanel/cpanel.config
 /usr/local/cpanel/whostmgr/bin/whostmgr2 --updatetweaksettings >/dev/null 2>&1
 /scripts/rebuildhttpdconf
+#END Apache Conf
+
 unset mv
 cat /var/spool/cron/root | egrep -v "nginx_client" > /tmp/cron.tmp
 mv -f /tmp/cron.tmp /var/spool/cron/root
 cat /var/spool/incron/root | egrep -v "createvhost.pl|restartcheck" > /var/spool/incron/root
-               /usr/local/cpanel/bin/manage_hooks  del script /scripts/postwwwacct --describe "Apachebooster" --category Whostmgr --event Accounts::Create --stage post >/dev/null 2>&1
-               /usr/local/cpanel/bin/manage_hooks  del script /scripts/prekillacct --describe "Apachebooster" --category Whostmgr --event Accounts::Remove --stage pre >/dev/null 2>&1
+
+if [ -f "/usr/local/cpanel/bin/manage_hooks" ]; then
+   /usr/local/cpanel/bin/manage_hooks  del script /scripts/postwwwacct --describe "Apachebooster" --category Whostmgr --event Accounts::Create --stage post >/dev/null 2>&1
+   /usr/local/cpanel/bin/manage_hooks  del script /scripts/prekillacct --describe "Apachebooster" --category Whostmgr --event Accounts::Remove --stage pre >/dev/null 2>&1
+fi
 sed -i '/\/etc\/init.*.varnish/d' /etc/init.d/httpd
 sed -i '/\/etc\/init.*.varnish/d' /usr/local/apache/bin/apachectl
 sed -i '/\/etc\/init.*.nginx/d' /etc/init.d/httpd

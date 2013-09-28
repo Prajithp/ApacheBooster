@@ -1,0 +1,24 @@
+# name
+name=ApacheBooster
+
+# Service that will serve this app
+service=whostmgr
+ 
+# Physical path: /usr/local/cpanel/3rdparty/Foo.php
+# Literal URL path: $server:$port/$cpsession/3rdparty/Foo.php
+url=/cgi/addon_ApacheBooster.cgi
+ 
+# System user to run process as
+#user=root
+
+# Required acls
+acls=software-ApacheBooster
+
+# Display name as show in the service ui
+displayname=<b>ApacheBooster</b>
+
+# Url to show in the service ui (relative to install path for whm this is cgi/)
+#entryurl=ApacheBooster/entry.cgi
+
+# Path to upgrade script
+upgradecall=/usr/local/cpanel/whostmgr/docroot/cgi/ApacheBooster/update.sh

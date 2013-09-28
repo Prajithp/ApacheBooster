@@ -5,7 +5,7 @@
 # This code is subject to the GPL  license. Unauthorized copying is prohibited
 
 export REMOTVERSION=$( /usr/bin/curl -s  http://prajith.in/version.txt )
-export LOCALVERSION=$(cat /usr/local/cpanel/whostmgr/cgi/nginx/version.txt)
+export LOCALVERSION=$(cat /usr/local/cpanel/whostmgr/cgi/ApacheBooster/version.txt)
 echo "Remote version $REMOTVERSION"
 echo "Local version $LOCALVERSION"
 if [ $REMOTVERSION ==  $LOCALVERSION ]; then
@@ -19,7 +19,7 @@ else
         bash install.sh
         ps aux|grep varnish|awk '{print $2}'|xargs kill -9
         /etc/init.d/httpd restart
-       wget -O /usr/local/cpanel/whostmgr/cgi/nginx/version.txt http://prajith.in/version.txt
+       wget -O /usr/local/cpanel/whostmgr/cgi/ApacheBooster/version.txt http://prajith.in/version.txt
         echo "Upgrade completed"
 fi
 

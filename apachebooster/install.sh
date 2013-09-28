@@ -1,5 +1,5 @@
 #!/bin/bash
-nVERSION="1.3.6"
+nVERSION="1.4.1"
 vVERSION="3.0.3"
 CUDIR=`pwd`
 bin_mkdir=`which mkdir`
@@ -21,23 +21,34 @@ clear
 echo -e  "Checking  cPanel installation.."
 
 if [   -d  "/usr/local/cpanel" ]; then
-     echo -e "$GREEN cPanel YES $RESET"
+   echo -e "$GREEN cPanel YES $RESET"
 else
-        echo -e "$RED cPanel  NO $RESET"
-        exit 0
+   echo -e "$RED cPanel  NO $RESET"
+   exit 1
 fi
-clear
-echo -e "$GREEN          ************************************************************$RESET"
-echo -e "$GREEN          *$RESET$WHITE      ApacheBooster Installation V 1.8          $GREEN*$RESET"
-echo -e "$GREEN          *$RESET$WHITE   Copyright (c) 2011-2012  https://www.prajith.in/     $GREEN*$RESET"
-echo -e "$GREEN          ************************************************************$RESET"
-echo " "
-echo " "
-sleep 2
-trap "" 2 20
+header() 
+{
+ clear
+ echo -e "$GREEN          ************************************************************$RESET"
+ echo -e "$GREEN          *$RESET$WHITE      ApacheBooster Installation V 1.9          $GREEN*$RESET"
+ echo -e "$GREEN          *$RESET$WHITE   Copyright (c) 2011-2012  https://www.prajith.in/     $GREEN*$RESET"
+ echo -e "$GREEN          ************************************************************$RESET"
+ echo " "
+ echo " "
+ sleep 2
+ trap "" 2 20
+}
+
+error() 
+{
+ clear
+ echo -e "$RED =======ERROR=======$RESET"
+}
+
+header
 
 echo -e "$GREEN Installing mailx zlib-devel pcre-devel openssl-devel $RESET"
-                 yum -y install tmpwatch mailx zlib-devel pcre-devel openssl-devel >/dev/null 2>&1
+                 yum -y install tmpwatch mailx  zlib-devel pcre-devel openssl-devel >/dev/null 2>&1
 clear
 
 if  which incrond
@@ -140,13 +151,18 @@ if [[ "$ALLINSTALLED" != 1 ]]; then
         echo "If you are unable to install the perl modules, please contact"
         echo "ApacheBooster support for assistance."
         echo "Support Address: prajithpalakkuda@gmail.com"
-        exit
+        exit 1
 else
         echo ".....done"
 fi
 clear
+if [ ! -f "latest_cpanel.sh" ]; then
+   echo "Please change the working directory to Apachebooster folder"
+   exit 1
+fi
+
 echo -e "$GREEN Checking for previous installation .. $RESET"
-      if [ -e  "/usr/local/cpanel/whostmgr/cgi/addon_nginx.cgi" ]; then
+      if [ -d  "/usr/local/cpanel/whostmgr/cgi/ApacheBooster" -o -f "/usr/local/cpanel/whostmgr/cgi/addon_nginx.cgi" ]; then
                echo -e "$GREEN ApacheBooster already installed $RESET"
 clear
 echo -e "$GREEN Backing up current version $RESET"
@@ -158,15 +174,29 @@ echo -e "$GREEN Backing up current version $RESET"
                $bin_cp -prf $varnish_prefix/etc/varnish /root/apachebooster-archive/
                $bin_cp -prf $varnish_prefix/var /root/apachebooster-archive/
                $bin_cp -prf /etc/sysconfig/varnish /root/apachebooster-archive/sys.varnish
-               $bin_cp -prf /usr/local/cpanel/whostmgr/cgi/addon_nginx.cgi /root/apachebooster-archive/
-               $bin_cp -prf /usr/local/cpanel/whostmgr/cgi/nginx /root/apachebooster-archive/nginx-cgi
+               if [ -f "/usr/local/cpanel/whostmgr/cgi/addon_ApacheBooster.cgi" ]; then
+                  $bin_cp -prf /usr/local/cpanel/whostmgr/cgi/addon_ApacheBooster.cgi /root/apachebooster-archive/
+               fi
+               if [ -d "/usr/local/cpanel/whostmgr/cgi/ApacheBooster" ]; then
+                  $bin_cp -prf /usr/local/cpanel/whostmgr/cgi/ApacheBooster /root/apachebooster-archive/nginx-cgi
+               else 
+                  $bin_cp -prf /usr/local/cpanel/whostmgr/cgi/addon_nginx.cgi /root/apachebooster-archive/
+                  $bin_cp -prf /usr/local/cpanel/whostmgr/cgi/nginx /root/apachebooster-archive/nginx-cgi
+               fi
                echo -e "Backup completed"
                echo " "
                echo " "
 clear
 echo -e "$GREEN Removing olde version $RESET"
-               $bin_rm -rvf /usr/local/cpanel/whostmgr/cgi/addon_nginx.cgi
-               $bin_rm -rvf /usr/local/cpanel/whostmgr/cgi/nginx
+               if [ -f "/usr/local/cpanel/whostmgr/cgi/addon_ApacheBooster.cgi" ]; then
+                    $bin_rm -rvf /usr/local/cpanel/whostmgr/cgi/addon_ApacheBooster.cgi
+                    $bin_rm -rvf /usr/local/cpanel/whostmgr/cgi/ApacheBooster
+               elif [ -d "/usr/local/cpanel/whostmgr/cgi/ApacheBooster" ]; then
+                    $bin_rm -rvf /usr/local/cpanel/whostmgr/cgi/ApacheBooster
+               elif [ -d "/usr/local/cpanel/whostmgr/cgi/nginx" ]; then 
+                    $bin_rm -rvf /usr/local/cpanel/whostmgr/cgi/addon_nginx.cgi
+                    $bin_rm -rvf /usr/local/cpanel/whostmgr/cgi/nginx
+               fi  
                $bin_rm -rvf /scripts/postwwwacct
                $bin_rm -rvf /scripts/installmod-rpf
                $bin_rm -rvf /scripts/installnginx
@@ -207,7 +237,8 @@ echo -e "$GREEN Installing scripts $RESET"
                chmod 700 scripts/* -R
                $bin_cp -prf  scripts/* /scripts/
                $bin_cp -prf  cgi/* /usr/local/cpanel/whostmgr/docroot/cgi/
-               wget -O /usr/local/cpanel/whostmgr/cgi/nginx/version.txt http://prajith.in/version.txt
+               wget -O /usr/local/cpanel/whostmgr/cgi/ApacheBooster/version.txt http://prajith.in/version.txt
+                  ./latest_cpanel.sh
 
 else
 clear
@@ -219,7 +250,8 @@ echo -e "$GREEN Installing scripts $RESET"
                chmod 700 scripts/* -R
                $bin_cp -prf  scripts/* /scripts/
                $bin_cp -prf  cgi/* /usr/local/cpanel/whostmgr/docroot/cgi/
-               wget -O /usr/local/cpanel/whostmgr/cgi/nginx/version.txt http://prajith.in/version.txt
+               wget -O /usr/local/cpanel/whostmgr/cgi/ApacheBooster/version.txt http://prajith.in/version.txt
+                 ./latest_cpanel.sh
 fi
 clear
 echo -e "$GREEN Installing WHM/cPanel hooks $RESET"
@@ -254,6 +286,11 @@ echo -e "$GREEN startig nginx installation $RESET"
                tar -xf  nginx-$nVERSION.tar.gz
                cd nginx-$nVERSION/
                ./configure --prefix=/usr/local/nginx/ --with-http_realip_module   --http-proxy-temp-path=/tmp/nginx_proxy --http-fastcgi-temp-path=/tmp/nginx_fastcgi --http-client-body-temp-path=/tmp/nginx_client --with-http_stub_status_module &&  make  && make install
+               if [ ! -d "/usr/local/nginx/" ]; then
+                   clear
+                   echo  "NginX installation failed"
+                   exit 1
+               fi
                $bin_rm -rvf  /usr/local/nginx/conf/nginx.conf
                $bin_cp -prf  $CUDIR/conf/nginx.conf /usr/local/nginx/conf/nginx.conf
                $bin_cp -prf  $CUDIR/conf/proxy.inc /usr/local/nginx/conf/
@@ -276,6 +313,11 @@ echo -e "$GREEN startig varnish installation $RESET"
               make clean 
               make distclean 
               ./configure --prefix=/usr/local/varnish/  && make  && make install
+               if [ ! -d "/usr/local/varnish/" ]; then
+                  clear
+                  echo  "varnish installation failed"
+                  exit 1
+               fi
               $bin_rm -rvf /usr/local/varnish/etc/varnish/default.vcl
               $bin_cp -pvr $CUDIR/conf/varnishconf/*  /usr/local/varnish/etc/varnish/
               $bin_cp -pvr $CUDIR/conf/varnish /etc/init.d/varnish
