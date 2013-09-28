@@ -1,0 +1,15 @@
+#!/bin/bash
+# apachebooster - purgecache                            Copyright(c) 2011 Ndimensionz, Inc.
+#                                                           All rights Reserved.
+# prajithpalakkuda@gmail.com                                       http://ndimensionz.com http://esupports.net
+# This code is subject to the GPL  license. Unauthorized copying is prohibited
+
+for domain in `cat /etc/userdomains|cut -d: -f1|grep -v "*"`
+do
+/usr/local/bin/php /scripts/purgedomains.php $domain
+echo "<pre>$domain              DONE</br>"
+done
+if [ -e "/usr/local/varnish/var/varnish/varnish_storage.bin" ]; then
+rm -rf /usr/local/varnish/var/varnish/varnish_storage.bin
+fi
+touch /usr/local/varnish/varnish_restart/restart.file

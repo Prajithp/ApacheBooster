@@ -1,0 +1,27 @@
+# Configuration file for varnish
+#
+# /etc/init.d/varnish expects the variable $DAEMON_OPTS to be set from this
+# shell script fragment.
+#
+
+# Maximum number of open files (for ulimit -n)
+NFILES=131072
+
+# Locked shared memory (for ulimit -l)
+# Default log size is 82MB + header
+# MEMLOCK=520000
+
+# Maximum size of corefile (for ulimit -c). Default in Fedora is 0
+# DAEMON_COREFILE_LIMIT="unlimited"
+
+# This file contains 4 alternatives, please use only one.
+
+## Alternative 1, Minimal configuration, no VCL
+#
+# Listen on port 6081, administration on localhost:6082, and forward to
+# content server on localhost:8080.  Use a fixed-size cache file.
+#
+DAEMON_OPTS="-P /usr/local/varnish/var/run/varnish.pid  -a :8082 -T localhost:6082 -f /usr/local/varnish/etc/varnish/default.vcl -p thread_pools=6 -p thread_pool_min=1000 -p thread_pool_max=3000 -p thread_pool_add_delay=2 -p sess_workspace=32768  -u varnish -g varnish -s file,/usr/local/varnish/var/varnish/varnish_storage.bin,1.5G"
+
+#####DAEMON_OPTS="-P /usr/local/varnish/var/run/varnish.pid -a :8082 -T localhost:6082  -f /usr/local/varnish/etc/varnish/default.vcl -p thread_pools=3 -p thread_pool_min=80 -p thread_pool_max=3000 -p thread_pool_add_delay=2 -p sess_workspace=65536 -u varnish -g varnish -s file,/usr/local/varnish/var/varnish/varnish_storage.bin,128M"
+

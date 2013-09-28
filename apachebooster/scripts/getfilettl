@@ -1,0 +1,16 @@
+#!/bin/bash
+# apachebooster - getfilettl                            Copyright(c) 2011 Ndimensionz, Inc.
+#                                                           All rights Reserved.
+# prajithpalakkuda@gmail.com                                       http://ndimensionz.com http://esupports.net
+# This code is subject to the GPL  license. Unauthorized copying is prohibited
+
+if [ "$1" = "-d" ]; then
+static_file=`cat /usr/local/varnish/etc/varnish/static_file.vcl|awk '/=/ {print $4}'|sed 's/;//g'`
+echo "$static_file"
+elif [ "$1" = "-f" ]; then
+dynamec_file=`cat /usr/local/varnish/etc/varnish/dynamic_file.vcl|awk '/=/ {print $4}'|sed 's/;//g'`
+echo "$dynamec_file"
+elif [ "$1" = "-b" ]; then
+bin_value=`cat /etc/sysconfig/varnish|grep "DAEMON_OPTS="|awk '/varnish_storage.bin/ {print $24}'|cut -d, -f3`
+echo "$bin_value"
+fi

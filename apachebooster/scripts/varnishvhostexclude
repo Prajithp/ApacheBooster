@@ -1,0 +1,26 @@
+#!/usr/bin/perl
+## if (req.http.host ~ "^www.prajith.in$") { set req.http.connection = "close"; return (pipe); }
+
+# apachebooster - varnishexclude                            Copyright(c) 2011 Ndimensionz, Inc.
+#                                                           All rights Reserved.
+# prajithpalakkuda@gmail.com                                       http://ndimensionz.com http://esupports.net
+# This code is subject to the GPL  license. Unauthorized copying is prohibited
+
+print "........Processing domains......\n";
+if ( -e "/usr/local/varnish/etc/varnish/vhost.exclude.vcl" ) {
+system ("cat /dev/null > /usr/local/varnish/etc/varnish/vhost.exclude.vcl");
+}
+if (-e "/usr/local/varnish/etc/varnish/exclude.vhost.tpl") {
+open (MYFILE, '/usr/local/varnish/etc/varnish/exclude.vhost.tpl');
+ while (<MYFILE>) {
+        chomp;
+        my $vhost = "$_";
+        chomp $vhost;
+ $vhost =~ s/\r//g;
+  open FILE, ">>/usr/local/varnish/etc/varnish/vhost.exclude.vcl" or die $!;
+         print FILE "if (req.http.host ~ \"^$vhost\$\") { set req.http.connection = \"close\"; return (pipe); }\n";
+close FILE;
+ }
+ close (MYFILE); 
+}
+print ".......Varnish VCL file has been updated........\n";

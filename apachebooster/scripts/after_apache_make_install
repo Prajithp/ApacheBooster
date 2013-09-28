@@ -1,0 +1,9 @@
+#!/bin/bash
+# apachebooster - after_apache_make_install                            Copyright(c) 2011 Ndimensionz, Inc.
+#                                                                         All rights Reserved.
+# prajithpalakkuda@gmail.com                                                   http://ndimensionz.com http://esupports.net
+# This code is subject to the GPL  license. Unauthorized copying is prohibited
+
+/bin/bash /scripts/installmod-rpf
+/etc/init.d/httpd restart
+/etc/init.d/nginx restart

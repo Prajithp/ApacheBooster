@@ -1,0 +1,119 @@
+#!/bin/bash
+#######################################################
+# chkconfig: 2345 95 20                               #
+# description: Cpanel integration                     #
+#                                                     #
+# processname: ApacheBooster                          #
+#                                                     #
+#   ApacheBooster init-script                         #
+#   Created by Prajith http://ndimensionz.com         #
+#######################################################
+NGINX_CONF_FILE="/usr/local/nginx/conf/nginx.conf"
+VARNISH_CONF_FILE="/usr/local/varnish/etc/varnish/default.vcl"
+nginx="/usr/local/nginx/sbin/nginx"
+varnish="/usr/local/varnish/sbin/varnishd"
+apache="/usr/local/apache/bin/apachectl"
+HTTPD=/usr/local/apache/bin/httpd
+LYNX="lynx -dump"
+PORT="$(grep 'apache_port=' /var/cpanel/cpanel.config 2>/dev/null | sed -e 's/.*=\([.0-9]*:\)\{0,1\}//;' -e 's/[^0-9]*//g' 2>/dev/null)"
+STATUSURL="http://localhost:${PORT:-80}/whm-server-status"
+progh=$(basename $HTTPD)
+prog="apachebooster"
+progv=$(basename $varnish)
+progn=$(basename $nginx)
+
+
+apacheinit="/etc/init.d/httpd"
+nginxinit="/etc/init.d/nginx"
+if [ -e "/etc/init.d/varnish" ]; then
+varnishinit="/etc/init.d/varnish"
+else 
+echo "varnish not installed in this box"
+fi
+. /etc/rc.d/init.d/functions
+
+start() {
+        echo -n $"Starting $prog: "
+        $apacheinit start > /dev/null 2>&1
+        sleep 1
+        $nginx -t -c $NGINX_CONF_FILE > /dev/null 2>&1
+        retval=$?
+        if [ $retval -eq 1 ]; then
+        echo
+        exit 1
+        fi
+        $nginxinit start > /dev/null 2>&1
+        retval=$?
+        if [ $retval -eq 0 ]
+                then
+         echo_success
+                        echo
+                else
+                        echo_failure
+                        echo
+                fi
+      
+        sleep 1
+        $varnish -C -f /usr/local/varnish/etc/varnish/default.vcl > /dev/null 2>&1
+        retval=$?
+        if  [ $retval -eq 1 ]; then
+        echo 
+        exit 1
+        fi
+        $varnishinit start > /dev/null 2>&1
+       retval=$?
+        if [ $retval -eq 0 ]
+                then
+         echo_success
+                        echo
+                else
+                        echo_failure
+                        echo
+                fi
+
+
+}
+stop() {
+        echo -n $"Stopping $prog: "
+        killproc $progn -QUIT
+        killproc $progv -QUIT
+        killproc $HTTPD -QUIT
+}
+
+R_status() {
+         status $progn
+         echo " "
+         status $progv
+         echo " "
+         status "$progh"
+         echo " "
+}
+
+
+
+
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  status)
+        R_status
+        ;;
+  restart|reload|condrestart)
+        stop
+        start
+        ;;
+  apachestatus)
+    $LYNX $STATUSURL
+       ;;
+  *)   
+        echo 
+        echo $"Usage: $0 {start|stop|restart|reload|status|apachestatus}"
+        echo 
+        exit 1
+esac
+exit 0
+

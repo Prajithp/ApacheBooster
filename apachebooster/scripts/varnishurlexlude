@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# apachebooster - varnishexclude                            Copyright(c) 2011 Ndimensionz, Inc.
+#                                                           All rights Reserved.
+# prajithpalakkuda@gmail.com                                       http://ndimensionz.com http://esupports.net
+# This code is subject to the GPL  license. Unauthorized copying is prohibited
+
+cat /dev/null > /usr/local/varnish/etc/varnish/url.exclude.vcl
+rm -rf /tmp/urlexclude
+for i in `cat /usr/local/varnish/etc/varnish/exclude.url.tpl`
+do
+echo "$i"|sed 's/\./\\./g' >> /tmp/urlexclude
+done
+if [ -e "/tmp/urlexclude" ]; then
+perl <<'EOF'
+open (MYFILE, '/tmp/urlexclude');
+ while (<MYFILE>) {
+ 	chomp;
+ 	my $test = "$_";
+        chomp $test;
+ $test =~ s/\r//g;
+  open FILE, ">>/usr/local/varnish/etc/varnish/url.exclude.vcl" or die $!;
+print FILE "if (req.url ~ \"$test\") { set req.http.connection = \"close\"; return (pipe); }\n";
+close FILE;
+ }
+ close (MYFILE); 
+EOF
+fi

@@ -1,0 +1,18 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use Data::Dumper;
+use XML::Simple;
+
+my $xml;
+
+while (<STDIN>) {
+        $xml .= $_;
+}
+
+my $xml_hashed = XMLin($xml);
+my $domain = $xml_hashed->{'CPDATA'}->{'DOMAIN'};
+unlink "/usr/local/nginx/vhost/$domain" . ".conf";
+chomp $domain;
+system ("/scripts/createvhost.pl $domain");
+system("/etc/init.d/nginx restart");

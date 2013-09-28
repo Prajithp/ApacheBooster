@@ -1,0 +1,18 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use XML::Simple;
+
+my $xml;
+
+while (<STDIN>) {
+       $xml .= $_;
+}
+
+my $xml_hashed = XMLin($xml);
+my $domain =  "$xml_hashed->{'cpanelevent'}->{'params'}->{'subdomain'}";
+
+$domain =~ s/_/./g;
+unlink "/usr/local/nginx/vhost/$domain" . ".conf";
+system("/etc/init.d/nginx restart");

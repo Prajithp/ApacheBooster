@@ -1,0 +1,21 @@
+#!/bin/bash
+# apachebooster - adjustwrap                            Copyright(c) 2011 Ndimensionz, Inc.
+#                                                           All rights Reserved.
+# prajithpalakkuda@gmail.com                                       http://ndimensionz.com http://esupports.net
+# This code is subject to the GPL  license. Unauthorized copying is prohibited
+
+
+VALUE="$2"
+
+static_file=`cat /usr/local/varnish/etc/varnish/static_file.vcl|awk '/=/ {print $4}'|sed 's/;//g'`
+
+dynamec_file=`cat /usr/local/varnish/etc/varnish/dynamic_file.vcl|awk '/=/ {print $4}'|sed 's/;//g'`
+
+bin_value=`cat /etc/sysconfig/varnish|grep "DAEMON_OPTS="|awk '/varnish_storage.bin/ {print $24}'|cut -d, -f3|sed 's/"//g'`
+if [ "$1" = "-cs" ]; then
+sed -i "s/${static_file}/${VALUE}/g" /usr/local/varnish/etc/varnish/static_file.vcl
+elif [ "$1" = "-cd" ]; then
+sed -i "s/${dynamec_file}/${VALUE}/g" /usr/local/varnish/etc/varnish/dynamic_file.vcl
+elif [ "$1" = "-cb" ]; then
+sed -i "s/${bin_value}/${VALUE}/g" /etc/sysconfig/varnish
+fi

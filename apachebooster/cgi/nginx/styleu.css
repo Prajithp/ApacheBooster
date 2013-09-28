@@ -1,0 +1,262 @@
+*{
+margin: 0;
+padding: 0;
+}
+
+#main{
+	width:980px;
+	height:563px;
+	margin:auto;
+}
+
+#header{
+	font-family:Tahoma, Geneva, sans-serif;
+	font-size:15px;
+	color:#003541;
+	text-shadow:#406871;
+	text-align:left;
+	margin-left:5px;
+	padding-left:5px;
+	padding-top:5px;
+}
+
+h2{
+	 text-shadow:  0 1px 0 #ccc,
+               	   0 2px 0 #EBEBEB,
+				   0 3px 0 #EBEBEB,
+				   0 4px 0 #EBEBEB,
+				   0 5px 0 #EBEBEB,
+				   0 6px 1px rgba(0,0,0,.1),
+				   0 0 5px rgba(0,0,0,.1),
+				   0 1px 3px rgba(0,0,0,.3),
+				   0 3px 5px rgba(0,0,0,.2),
+				   0 5px 10px rgba(0,0,0,.25),
+				   0 10px 10px rgba(0,0,0,.2),
+				   0 20px 20px rgba(0,0,0,.15);
+	color: #003541;
+}
+
+#clearzone1{
+	height:40px;
+	clear:both;
+}
+
+#lastclearzone{
+	height:10px;
+	clear:both;
+}
+
+#clearzone2{
+	height:13px;
+	clear:both;
+	}
+
+#nav{
+	padding-left:5px;
+	width:980px;
+	background-color:#cfcece;
+	border-top: 1px #999 inset;
+}
+
+#content{
+	padding-left:35px;
+}
+
+#mainindexcontect{
+	padding-left:35px;
+	height:275px;
+}
+
+#welcomemessage{
+	font-family:Tahoma, Geneva, sans-serif;
+	font-size:15px;
+	color:#000;
+	border:none;
+	width:880px;
+	padding: 3px;
+	padding-left:10px;
+	box-shadow: 0px 0px 30px 10px #bfd6b2;
+	background: none;
+	border-radius: 20px
+}
+#welcomemessage2{
+	margin:auto;
+	font-family:Tahoma, Geneva, sans-serif;
+	font-size:15px;
+	color:#000;
+	border:none;
+	width:534px;
+	height:188px;
+	padding:3px;
+	padding-top:20px;
+	padding-left:10px;
+	background:url(images/box-bg.png) no-repeat;
+	border-radius: 20px;
+	text-align:center;
+}
+#footer{
+	font-family:Verdana, Geneva, sans-serif;
+	font-size:13px;
+	color:#333333;
+	border-top: solid 1px #48792b;
+	width:980px;
+}
+
+.subc{
+	font-size:15px;
+}
+
+/* Menu */
+#pop {
+	background: #cfcece;
+	height:35px;
+	width:508px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+#pop li ul {
+	background: #cfcece;
+	list-style: none;
+}
+#pop li {
+	float: left;
+	margin: 0;
+	position: relative;
+	padding-left: 7px;
+}
+#pop li li {
+	float: left;
+	width: 175px;
+	margin: 0;
+	padding: 0;
+}
+#pop li a, #pop li a:link, #pop li a:visited {
+	font: normal 12px Tahoma;
+	color: #414A52;
+	text-decoration: none;
+	display: block;
+	padding:0;
+}
+#pop li a:hover, #pop li a:active {
+	color: #FFF;
+	display: block;
+}
+#pop li li a, #pop li li a:link, #pop li li a:visited {
+	background: #cfcece;
+	color:#414A52;
+	width: 175px;
+	margin: 0px;
+	padding: 5px 12px;
+	border-top: 1px solid #F5F9FB;
+}
+#pop li li a:hover, #pop li li a:active {
+	color: #FFF;
+	background: #2583AD;
+}
+#pop li ul {
+	position: absolute;
+	width: 199px;
+	display: none;
+	right: 0;
+}
+#pop li:hover ul {
+	display: block;
+}
+table{
+    margin:0px;
+	width:100%;
+}
+.tabling {
+	border: solid 1px #48792b;
+	width:980px;
+	height: 290px;
+	overflow-y: scroll;
+	overflow-x: hidden;
+}
+.tableheading {
+	border: solid 1px #48792b;
+	width:982px;
+	height: 30px;
+	border-bottom: none;
+}
+td{
+	text-align:center;
+	line-height:30px;
+	font-size:14px;
+	font-weight:bold;
+	font-family:Tahoma;
+	color:#48782b;
+}
+.reding {
+    color:#FF0000;
+}
+.blacking {
+    color:#000;
+
+}
+td h4{
+	font-size:16px;
+	font-family:Tahoma;
+	color:#48782b;
+}
+
+.Date, .ServerName, .LoadAverage{
+	text-align: center;
+}
+p.iconing {
+	background:url(images/iconing.png) no-repeat left center;
+	padding-left:10px;
+	margin-left:14px;
+	line-height:30px;
+	font-size:12px;
+	font-weight:normal;
+	font-family:Tahoma;
+	color:#000;
+}
+.ndc_body {
+        margin: 10px 0px;
+}
+.ndc_success, .ndc_error, .ndc_warning, .ndc_info {
+        margin: 10px 0px;
+        padding: 15px 10px 15px 55px;
+        border-radius: 10px;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+}
+
+.ndc_success {
+        border: 1px solid #4F8A10;
+        background: #DFF2BF url('success.png') no-repeat 10px center;
+}
+
+.ndc_error {
+        border: 1px solid #D8000C;
+        background: #FFCCCC url('error.png') no-repeat 10px center;
+}
+
+.ndc_warning {
+        border: 1px solid #9F6000;
+        background: #FEEFB3 url('warning.png') no-repeat 10px center;
+}
+
+.ndc_info {
+        border: 1px solid #00529B;;
+        background: #BDE5F8 url('info.png') no-repeat 10px center;
+}
+.success {
+background : #e0ecd1 url(images/success.gif) no-repeat 12px 50%;
+border : 1px solid #60a400;
+border-width : 5px 0 0 0;
+color : #60a400;
+}
+.error {
+background : #ffe3e1 url(images/exclamation.png) no-repeat 12px 50%;
+border : 1px solid #f14545;
+border-width : 5px 0 0 0;
+color : #f14545;
+}
+#contentMain.contentPadding {
+        padding:0;
+}
+

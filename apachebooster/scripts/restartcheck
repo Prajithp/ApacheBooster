@@ -1,0 +1,12 @@
+#!/bin/bash
+# apachebooster - restartcheck                       Copyright(c) 2011 Ndimensionz, Inc.
+#                                                           All rights Reserved.
+# prajithpalakkuda@gmail.com                                       http://ndimensionz.com http://esupports.net
+# This code is subject to the GPL  license. Unauthorized copying is prohibited
+
+DIR="/usr/local/varnish/varnish_restart"
+if [ -e $DIR/restart.file ]; then
+ /etc/init.d/httpd restart
+rm -rf $DIR/restart.file
+fi
+

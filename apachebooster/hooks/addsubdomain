@@ -1,0 +1,19 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use Data::Dumper;
+use XML::Simple;
+
+my $xml;
+
+while (<STDIN>) {
+        $xml .= $_;
+}
+my $xml_hashed = XMLin($xml);
+my $sub = $xml_hashed->{'cpanelevent'}->{'params'}->{'param0'};
+my $mdomain = $xml_hashed->{'cpanelevent'}->{'params'}->{'param1'};
+my $domain = $sub . '.' . $mdomain;
+my $DOMAIN = "$domain";
+system("/scripts/createvhost.pl $DOMAIN");
+system("/etc/init.d/nginx restart");

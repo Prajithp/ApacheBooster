@@ -1,0 +1,69 @@
+#!/bin/bash
+# apachebooster - genevarnishconf                            Copyright(c) 2011 Ndimensionz, Inc.
+#                                                           All rights Reserved.
+# prajithpalakkuda@gmail.com                                       http://ndimensionz.com http://esupports.net
+# This code is subject to the GPL  license. Unauthorized copying is prohibited
+
+CONF=/usr/local/varnish/etc/varnish/vhost.vcl
+CONF1=/usr/local/varnish/etc/varnish/acl.vcl
+TMPF=/tmp/IP
+IP_1=`/scripts/ipusage | awk '{print $1}'|head -n1`
+/scripts/ipusage | awk '{print $1}'|while read ip; do echo  -e "${ip}"; done > $TMPF
+#echo 192.168.1.1 > $TMPF
+if [ -e $CONF ] ; then
+rm -rf $CONF
+fi
+(echo "backend default {
+    .host = \"$IP_1\";
+    .port = \"82\";
+    .connect_timeout = 600s;
+    .first_byte_timeout = 600s;
+    .between_bytes_timeout = 600s;
+}" >>  $CONF)
+for i in `cat $TMPF`
+do
+REV=`echo $i | sed 's/\./_/g'`
+(echo "backend be$REV {
+    .host = \"$i\";
+    .port = \"82\";
+    .connect_timeout = 600s;
+    .first_byte_timeout = 600s;
+    .between_bytes_timeout = 600s;
+}" >>  $CONF )
+done
+for i in `cat $TMPF`
+do
+REV=`echo $i | sed 's/\./_/g'`
+
+(echo "acl acl$REV {
+\"$i\";
+}" >> $CONF)
+done
+(echo "acl acl127_0_0_1 {
+\"127.0.0.1\";
+}" >> $CONF)
+
+###############ACL VERIFICATION##########
+if [ -e $CONF1 ]; then
+rm -rf $CONF1
+fi
+AIP=`cat $TMPF|head -n1`
+if [ -e $CONF1 ]; then
+rm -rf $CONF1
+fi
+AIP=$IP_1
+for i in `cat $TMPF`
+do
+AREV=`echo $i | sed 's/\./_/g'`
+if [ "$i" = "$AIP" ]; then
+echo "if (server.ip ~ acl$AREV) {
+set req.backend = be$AREV;
+}" >> $CONF1
+else
+echo "else if (server.ip ~ acl$AREV) {
+set req.backend = be$AREV;
+}" >> $CONF1
+fi
+done
+
+/bin/bash /scripts/rebuildipadd

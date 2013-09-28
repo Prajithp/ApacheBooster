@@ -1,0 +1,163 @@
+#!/bin/bash
+#
+# nginx – this script starts and stops the nginx daemin
+# Taken from http://www.hikaro.com
+# chkconfig:   – 85 15
+# description:  Nginx is an HTTP(S) server, HTTP(S) reverse \
+#               proxy and IMAP/POP3 proxy server
+# processname: nginx
+# config:      /usr/local/nginx/conf/nginx.conf
+# pidfile:     /usr/local/nginx/logs/nginx.pid
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+# Source networking configuration.
+. /etc/sysconfig/network
+
+# Check that networking is up.
+[ "$NETWORKING" = "no" ] && exit 0
+
+nginx="/usr/local/nginx/sbin/nginx"
+prog=$(basename $nginx)
+
+NGINX_CONF_FILE="/usr/local/nginx/conf/nginx.conf"
+
+lockfile=/var/lock/subsys/nginx
+
+start() {
+[ -x $nginx ] || exit 5
+[ -f $NGINX_CONF_FILE ] || exit 6
+echo -n $"Starting $prog: "
+daemon $nginx -c $NGINX_CONF_FILE
+retval=$?
+echo
+[ $retval -eq 0 ] && touch $lockfile
+return $retval
+}
+fullstatus() {
+PIDFILE="/usr/local/nginx/logs/nginx.pid"
+STATUS="http://127.0.0.1/nginx_status"
+NOW=`date +%s`
+NGINX_START=`stat -c %Y $PIDFILE`
+if [ -z "$NGINX_START" ]; then
+        echo "Can't find nginx's pid file."
+        exit 1
+fi
+STAT=`curl -s $STATUS`
+OLDIFS="$IFS"
+IFS=$'\n'
+STAT=($STAT)
+if [[ ! "${STAT[0]}" =~ "Active connections" ]]; then
+        echo "Failed to curl status URL: $STATUS"
+        exit 1
+fi
+IFS=$' '
+SUMM=(${STAT[2]})
+REQUESTS=${SUMM[2]}
+CON_ACCEPTED=${SUMM[0]}
+CON_HANDLED=${SUMM[1]}
+IFS="$OLDIFS"
+ACTIVE=${STAT[0]}
+CURRENT=${STAT[3]}
+DURATION=$((NOW - $NGINX_START))
+if [ "$DURATION" -gt "86399" ]; then
+        UPTIME="`echo $DURATION | awk '{ printf("%.1f", $1 / 86400) }'` days"
+elif [ "$DURATION" -gt "3599" ]; then
+        UPTIME="`echo $DURATION | awk '{ printf("%.1f", $1 / 3600) }'` hours"
+else
+        UPTIME="`echo $DURATION | awk '{ printf("%.0f", $1 / 60) }'` minutes"
+fi
+REQPERCON=`echo $REQUESTS $CON_HANDLED | awk '{ printf("%.1f", $1 / $2) }'`
+REQPERSEC=`echo $REQUESTS $DURATION | awk '{ printf("%.1f", $1 / $2) }'`
+# Pad strings
+PLEN=%$((${#REQUESTS}))s
+CON_ACCEPTED=`printf "$PLEN" $CON_ACCEPTED`
+CON_HANDLED=`printf "$PLEN" $CON_HANDLED`
+echo "
+Nginx up $UPTIME
+
+$ACTIVE
+$CURRENT
+
+Connections Accepted: $CON_ACCEPTED
+ Connections Handled: $CON_HANDLED
+      Total Requests: $REQUESTS
+
+ Requests/Connection: $REQPERCON
+     Requests/Second: $REQPERSEC
+"
+exit 0
+}
+
+stop() {
+echo -n $"Stopping $prog: "
+killproc $prog -QUIT
+retval=$?
+echo
+[ $retval -eq 0 ] && rm -f $lockfile
+return $retval
+}
+
+restart() {
+configtest || return $?
+stop
+start
+}
+
+reload() {
+configtest || return $?
+echo -n $"Reloading $prog: "
+killproc $nginx -HUP
+RETVAL=$?
+echo
+}
+
+force_reload() {
+restart
+}
+
+configtest() {
+$nginx -t -c $NGINX_CONF_FILE
+}
+
+rh_status() {
+status $prog
+}
+
+rh_status_q() {
+rh_status >/dev/null 2>&1
+}
+
+case "$1" in
+start)
+rh_status_q && exit 0
+$1
+;;
+stop)
+rh_status_q || exit 0
+$1
+;;
+restart|configtest)
+$1
+;;
+reload)
+rh_status_q || exit 7
+$1
+;;
+force-reload)
+force_reload
+;;
+fullstatus)
+fullstatus
+;;
+status)
+rh_status
+;;
+condrestart|try-restart)
+rh_status_q || exit 0
+;;
+*)
+echo $"Usage: $0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload|configtest|fullstatus}"
+exit 2
+esac

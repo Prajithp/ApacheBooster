@@ -1,0 +1,18 @@
+#!/bin/bash
+# apachebooster - rebuildipadd                            Copyright(c) 2011 Ndimensionz, Inc.
+#                                                           All rights Reserved.
+# prajithpalakkuda@gmail.com                                       http://ndimensionz.com http://esupports.net
+# This code is subject to the GPL  license. Unauthorized copying is prohibited
+
+IP_LIST=$(for i in `/sbin/ifconfig | grep Bcast | awk '{ print $2}' |cut -d ":" -f2` ; do echo -ne "$i " ; done)
+if [ -f "/usr/local/apache/conf/mod_rpaf.conf" ]; then
+rm -rf /usr/local/apache/conf/mod_rpaf.conf
+fi
+cat > /usr/local/apache/conf/mod_rpaf.conf << EOF
+LoadModule rpaf_module        modules/mod_rpaf-2.0.so
+RPAFenable On
+RPAFproxy_ips $IP_LIST
+RPAFsethostname On
+RPAFheader X-Real-IP
+EOF
+

@@ -1,0 +1,57 @@
+#!/usr/local/cpanel/3rdparty/bin/perl
+# cpanel - restartsrv_ipaliases                   Copyright(c) 2011 cPanel, Inc.
+#                                                           All rights Reserved.
+# copyright@cpanel.net                                         http://cpanel.net
+# This code is subject to the cPanel license. Unauthorized copying is prohibited
+
+use Cpanel::RestartSrv     ();
+use Cpanel::Ips            ();
+use Cpanel::Chkservd::Tiny ();
+
+eval {
+    local $SIG{'__DIE__'};
+    require Cpanel::Rlimit;
+    Cpanel::Rlimit::set_rlimit_to_infinity();
+};
+
+Cpanel::RestartSrv::setuppath();
+
+my ( $restart, $check, $status ) = Cpanel::RestartSrv::parseargv();
+
+my $processowner = 'varnish';
+my $service      = 'varnishd';
+my $system       = lc $^O;
+
+( $processowner, $service ) = Cpanel::RestartSrv::servicefixup( $system, $service );
+
+my $disabled = 0;
+if ( -e '/etc/varnishdisable' ) {
+    $disabled = 1;
+}
+
+if ( $restart && !$disabled ) {
+
+    my $lock_file = '/var/run/restartsrv_varnish.lock';
+    Cpanel::RestartSrv::lock_file($lock_file);
+
+    Cpanel::Chkservd::Tiny::suspend_service( $service, 60 );
+    if ( $restart != -1 ) {
+        Cpanel::RestartSrv::logged_startup( 'varnish', 1, [ '/etc/init.d/varnish', 'start' ] );
+    }
+    else {
+        Cpanel::RestartSrv::nooutputsystem( '/etc/init.d/varnish', 'stop' );
+    }
+
+    unlink $lock_file if -e $lock_file;
+
+}
+elsif ($status) {
+
+    #--status (show ps)
+    if ($disabled) {
+        print "$service is disabled\n";
+    }
+    else {
+        print Cpanel::RestartSrv::check_service( 'service' => $service, 'user' => $processowner );
+    }
+}
