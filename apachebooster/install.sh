@@ -26,7 +26,6 @@ else
         echo -e "$RED cPanel  NO $RESET"
         exit 0
 fi
-header() {
 clear
 echo -e "$GREEN          ************************************************************$RESET"
 echo -e "$GREEN          *$RESET$WHITE      ApacheBooster Installation V 1.8          $GREEN*$RESET"
@@ -36,9 +35,7 @@ echo " "
 echo " "
 sleep 2
 trap "" 2 20
-}
 
-header
 echo -e "$GREEN Installing mailx zlib-devel pcre-devel openssl-devel $RESET"
                  yum -y install mailx zlib-devel pcre-devel openssl-devel >/dev/null 2>&1
 clear
