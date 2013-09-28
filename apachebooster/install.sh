@@ -44,7 +44,7 @@ echo -e "$RED =======ERROR=======$RESET"
 
 header
 echo -e "$GREEN Installing mailx zlib-devel pcre-devel openssl-devel $RESET"
-                 yum -y install mailx zlib-devel pcre-devel openssl-devel >/dev/null 2>&1
+                 yum -y install tmpwatch mailx zlib-devel pcre-devel openssl-devel >/dev/null 2>&1
 clear
 
 if  which incrond

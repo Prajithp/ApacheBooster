@@ -38,7 +38,7 @@ server {
           root $config->{"$listdomain"}->{'DOCUMENTROOT'};
           location / {
           location ~.*\.(3gp|gif|jpg|jpeg|png|ico|wmv|avi|asf|asx|mpg|mpeg|mp4|pls|mp3|mid|wav|swf|flv|html|htm|txt|js|css|exe|zip|tar|rar|gz|tgz|bz2|uha|7z|doc|docx|xls|xlsx|pdf|iso)\$ {
-             expires 7d;
+             expires 7d; #Comment this out if you're using the apache backend cache-control/expires headers.
              try_files \$uri \@backend;
           }
              error_page 405 = \@backend;
