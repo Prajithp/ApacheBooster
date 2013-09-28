@@ -37,10 +37,6 @@ echo " "
 sleep 2
 trap "" 2 20
 }
-error() {
-clear
-echo -e "$RED =======ERROR=======$RESET"
-}
 
 header
 echo -e "$GREEN Installing mailx zlib-devel pcre-devel openssl-devel $RESET"
