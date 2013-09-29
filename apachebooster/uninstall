@@ -16,10 +16,9 @@ if [ -f "/usr/local/cpanel/whostmgr/cgi/addon_ApacheBooster.cgi" ]; then
    rm -rvf /usr/local/cpanel/whostmgr/cgi/ApacheBooster
 fi
 #BEGIN scripts section
-rm -rvf /scripts/postwwwacct
+rm -rvf /scripts/postwwwacct_apachebooster
 rm -rvf /scripts/installmod-rpf
 rm -rvf /scripts/installnginx
-rm -rvf /scripts/posteasyapache
 rm -rvf /scripts/preeasyapache
 rm -rvf /scripts/rebuildnginxconf
 rm -rvf /scripts/rebuildvhost
@@ -32,7 +31,7 @@ rm -rvf /scripts/purgedomains.php
 rm -rvf /scripts/getfilettl
 rm -rvf /scripts/adjustwrap
 rm -rvf /scripts/varnishurlexlude
-rm -rvf /scripts/prekillacct
+rm -rvf /scripts/prekillacct_apachebooster
 rm -rvf /scripts/whmapi.pl
 rm -rvf /scripts/updateapachebooster
 rm -rvf /scripts/createvhost.pl
@@ -49,6 +48,7 @@ rm -rvf /usr/local/cpanel/hooks/addondomain/deladdondomain
 rm -rvf /usr/local/cpanel/hooks/subdomain/delsubdomain
 rm -rvf /usr/local/cpanel/hooks/park/park
 rm -rvf /usr/local/cpanel/hooks/park/unpark
+rm -rvf "/usr/local/cpanel/Cpanel/Config/ConfigObj/Driver/ApacheBooster*"
 /usr/local/cpanel/bin/register_hooks
 if [ -e "/usr/local/cpanel/bin/unregister_appconfig" ]; then
     /usr/local/cpanel/bin/unregister_appconfig ApacheBooster
@@ -57,6 +57,7 @@ else
         rm -rf /var/cpane/apps/ApacheBooster.conf
     fi
 fi
+
 #END hooks
 
 #BEGIN Apache Conf
@@ -71,8 +72,8 @@ mv -f /tmp/cron.tmp /var/spool/cron/root
 cat /var/spool/incron/root | egrep -v "createvhost.pl|restartcheck" > /var/spool/incron/root
 
 if [ -f "/usr/local/cpanel/bin/manage_hooks" ]; then
-   /usr/local/cpanel/bin/manage_hooks  del script /scripts/postwwwacct --describe "Apachebooster" --category Whostmgr --event Accounts::Create --stage post >/dev/null 2>&1
-   /usr/local/cpanel/bin/manage_hooks  del script /scripts/prekillacct --describe "Apachebooster" --category Whostmgr --event Accounts::Remove --stage pre >/dev/null 2>&1
+   /usr/local/cpanel/bin/manage_hooks  del script /scripts/postwwwacct_apachebooster --describe "Apachebooster" --category Whostmgr --event Accounts::Create --stage post >/dev/null 2>&1
+   /usr/local/cpanel/bin/manage_hooks  del script /scripts/prekillacct_apachebooster --describe "Apachebooster" --category Whostmgr --event Accounts::Remove --stage pre >/dev/null 2>&1
 fi
 sed -i '/\/etc\/init.*.varnish/d' /etc/init.d/httpd
 sed -i '/\/etc\/init.*.varnish/d' /usr/local/apache/bin/apachectl

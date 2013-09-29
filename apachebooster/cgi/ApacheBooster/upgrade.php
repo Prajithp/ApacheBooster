@@ -1,6 +1,6 @@
 <?php
 $RVERSION = `/usr/bin/curl -s http://prajith.in/version.txt`;
-$LVERSION = `/bin/cat /usr/local/cpanel/whostmgr/cgi/nginx/version.txt`;
+$LVERSION = `/bin/cat /usr/local/cpanel/whostmgr/cgi/ApacheBooster/version.txt`;
 ?>
 <!DOCTYPE html>
 <html>
@@ -16,9 +16,9 @@ $LVERSION = `/bin/cat /usr/local/cpanel/whostmgr/cgi/nginx/version.txt`;
 <p>   Already uptodate </p></div>";
                           
                           else
-echo "<div class=\"error\"><p>
-                                Version $RVERSION is now available. Please reffer belw docs to upgrade.
-                         </p> </div>";
+echo "<div class=\"error\">
+                                Version $RVERSION is now available. Please reffer the  belw docs to upgrade.
+                          </div>";
                           ?>
 
 
