@@ -33,7 +33,7 @@ print('
 </form>
 <?php
 if(isset($_POST['submit'])){
-echo "Rebuilding IP pooli.....Done";
+echo "Rebuilding IP pool.....Done";
 rebuild("/scripts/genevarnishconf");
 
 }
