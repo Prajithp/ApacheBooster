@@ -1,5 +1,5 @@
 #!/bin/bash
-nVERSION="1.4.1"
+nVERSION="1.4.2"
 vVERSION="3.0.3"
 CUDIR=`pwd`
 bin_mkdir=`which mkdir`
