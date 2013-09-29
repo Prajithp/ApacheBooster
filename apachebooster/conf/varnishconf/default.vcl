@@ -25,7 +25,8 @@ set req.grace = 5m;
      include "/usr/local/varnish/etc/varnish/cpanel.url.vcl"; 
     # Remove has_js and Google Analytics cookies.
     set req.http.Cookie = regsuball(req.http.Cookie, "(^|;\s*)(__[a-z]+|has_js)=[^;]*", "");
- 
+    # Remove a ";" prefix, if present.
+    set req.http.Cookie = regsub(req.http.Cookie, "^;\s*", ""); 
     # Normalize the Accept-Encoding header
     if (req.http.Accept-Encoding) {
         if (req.url ~ "\.(jpg|jpeg|png|gif|gz|tgz|bz2|tbz|mp3|ogg|swf|flv|pdf|ico)$") {
