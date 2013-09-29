@@ -171,5 +171,4 @@ CONFIG
 
 unlink "/tmp/apachebooster_ini" if -f "/tmp/apachebooster_ini";
 unlink "/tmp/apachebooster_ini_tmp" if -f "/tmp/apachebooster_ini_tmp";
-
-
+unlink "/tmp/createvhosttmp" if -f "/tmp/createvhosttmp";
