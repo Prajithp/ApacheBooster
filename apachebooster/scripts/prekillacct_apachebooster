@@ -1,0 +1,13 @@
+#!/usr/bin/perl
+# apachebooster - prekillacct                            Copyright(c) 2011 Ndimensionz, Inc.
+#                                                           All rights Reserved.
+# prajithpalakkuda@gmail.com                                       http://ndimensionz.com http://esupports.net
+# This code is subject to the GPL  license. Unauthorized copying is prohibited
+
+my %OPTS = @ARGV;
+$USER = "$OPTS{'user'}";
+chomp $USER;
+my $domain =`/scripts/whmapi.pl -gu $USER`;
+$domain =~ s/\n//g;
+unlink "/usr/local/nginx/vhost/" . "$domain" . ".conf";
+system("/etc/init.d/nginx restart");

@@ -26,41 +26,39 @@ else
    echo -e "$RED cPanel  NO $RESET"
    exit 1
 fi
-header() 
+ 
+clear
+echo -e "$GREEN          ************************************************************$RESET"
+echo -e "$GREEN          *$RESET$WHITE      ApacheBooster Installation V 1.9          $GREEN*$RESET"
+echo -e "$GREEN          *$RESET$WHITE   Copyright (c) 2011-2012  https://www.prajith.in/     $GREEN*$RESET"
+echo -e "$GREEN          ************************************************************$RESET"
+echo " "
+echo " "
+sleep 2
+trap "" 2 20
+
+exit_code()  
 {
- clear
- echo -e "$GREEN          ************************************************************$RESET"
- echo -e "$GREEN          *$RESET$WHITE      ApacheBooster Installation V 1.9          $GREEN*$RESET"
- echo -e "$GREEN          *$RESET$WHITE   Copyright (c) 2011-2012  https://www.prajith.in/     $GREEN*$RESET"
- echo -e "$GREEN          ************************************************************$RESET"
- echo " "
- echo " "
- sleep 2
- trap "" 2 20
+ if [ $? -ne $1 ]; then echo $2; fi; 
 }
 
-error() 
-{
- clear
- echo -e "$RED =======ERROR=======$RESET"
-}
-
-header
-
-echo -e "$GREEN Installing mailx zlib-devel pcre-devel openssl-devel $RESET"
+echo -e "$GREEN Installing tmpwatch mailx zlib-devel pcre-devel openssl-devel $RESET"
                  yum -y install tmpwatch mailx  zlib-devel pcre-devel openssl-devel >/dev/null 2>&1
 clear
 
-if  which incrond
+if  which incrond > /dev/null 2>&1
             then
             echo " $GREEN Found an existing incron installation .. $RESET "
 else
-             OS=`cat /etc/redhat-release|awk '{print int($3)}'`
+	     #ripped from cloudlinux
+	     rpm -q --whatprovides redhat-release > /dev/null 2>&1
+             exit_code 0 "There is no package providing /etc/redhat-release, please install correct release package and try again" 
+             OS="$(rpm -q --qf %{version} `rpm -q --whatprovides redhat-release` | cut -c 1)"
              bit=`uname -i`
                     if [ $bit = "i386" ] || [ $bit = "i686" ] || [ $bit = "i586" ] ; then
-                             rpm -ivh $CUDIR/packages/$OS/i386/*
+                             rpm -ivh "$CUDIR/packages/$OS/i386/incron*"
                      else
-                            rpm -ivh $CUDIR/packages/$OS/x86_64/*
+                            rpm -ivh "$CUDIR/packages/$OS/x86_64/incron*"
 
         fi
 fi
@@ -197,7 +195,7 @@ echo -e "$GREEN Removing olde version $RESET"
                     $bin_rm -rvf /usr/local/cpanel/whostmgr/cgi/addon_nginx.cgi
                     $bin_rm -rvf /usr/local/cpanel/whostmgr/cgi/nginx
                fi  
-               $bin_rm -rvf /scripts/postwwwacct
+               $bin_rm -rvf /scripts/postwwwacct_apachebooster
                $bin_rm -rvf /scripts/installmod-rpf
                $bin_rm -rvf /scripts/installnginx
                $bin_rm -rvf /scripts/posteasyapache
@@ -210,7 +208,7 @@ echo -e "$GREEN Removing olde version $RESET"
                $bin_rm -rvf /scripts/genevarnishconf
                $bin_rm -rvf /scripts/purgedomains.php
                $bin_rm -rvf /scripts/purgecache
-               $bin_rm -rvf /scripts/prekillacct
+               $bin_rm -rvf /scripts/prekillacct_apachebooster
                $bin_rm -rvf /scripts/whmapi.pl
                $bin_rm -rvf /scripts/adjustwrap
                $bin_rm -rvf /scripts/checkuserdomains
@@ -265,8 +263,8 @@ echo -e "$GREEN Installing WHM/cPanel hooks $RESET"
                $bin_cp -prvf hooks/delsubdomain    /usr/local/cpanel/hooks/subdomain/delsubdomain
                $bin_cp -prvf hooks/park            /usr/local/cpanel/hooks/park/park
                $bin_cp -prvf hooks/unpark          /usr/local/cpanel/hooks/park/unpark
-               /usr/local/cpanel/bin/manage_hooks  add script /scripts/postwwwacct --describe "Apachebooster" --category Whostmgr --event Accounts::Create --stage post >/dev/null 2>&1
-               /usr/local/cpanel/bin/manage_hooks  add script /scripts/prekillacct --describe "Apachebooster" --category Whostmgr --event Accounts::Remove --stage pre >/dev/null 2>&1
+               /usr/local/cpanel/bin/manage_hooks  add script /scripts/postwwwacct_apachebooster --describe "Apachebooster" --category Whostmgr --event Accounts::Create --stage post >/dev/null 2>&1
+               /usr/local/cpanel/bin/manage_hooks  add script /scripts/prekillacct_apachebooster --describe "Apachebooster" --category Whostmgr --event Accounts::Remove --stage pre >/dev/null 2>&1
 sed -i "s/$HTTPD -k .*/\\0\\n\\/etc\\/init.d\\/varnish \$ARGV/g" /usr/local/apache/bin/apachectl
 sed -i "s/$HTTPD -k .*/\\0\\n\\/etc\\/init.d\\/nginx \$ARGV/g" /usr/local/apache/bin/apachectl
 sed -i "s/$HTTPD -k .*/\\0\\n\\/etc\\/init.d\\/nginx \$ARGV/g" /etc/init.d/httpd
@@ -279,7 +277,8 @@ echo -e "$GREEN Registering  hooks $RESET"
 clear         
 
 echo -e "$GREEN Creating varnish system user $RESET"
-               /usr/sbin/useradd varnish -s /sbin/nologin
+               /usr/sbin/groupadd -g 87 varnish 
+               /usr/sbin/useradd -g 87 -u 87 varnish -s /sbin/nologin
 clear
 echo -e "$GREEN startig nginx installation $RESET"
                cd $CUDIR/packages/
