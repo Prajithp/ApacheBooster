@@ -10,20 +10,19 @@ worker_processes  2;
 error_log  logs/error.log info;
 worker_rlimit_nofile  8192;
 events {
-worker_connections  1024; 
+worker_connections  5120; 
 use epoll; 
 }
-
 http {
-server_names_hash_max_size 2048;
+server_names_hash_max_size 10240;
  server_names_hash_bucket_size 1024;
-
 include    mime.types;
 default_type  application/octet-stream;
 sendfile on;
 tcp_nopush on;
 tcp_nodelay on;
 keepalive_timeout  10;
+
  gzip on;
  gzip_vary on;
  gzip_disable "MSIE [1-6]\.";
@@ -36,6 +35,7 @@ keepalive_timeout  10;
  ignore_invalid_headers on;
 client_header_timeout  3m;
 client_body_timeout 3m;
+client_max_body_size 200m; 
 send_timeout     3m;
 connection_pool_size  256;
 client_header_buffer_size 4k;
@@ -43,8 +43,8 @@ large_client_header_buffers 4 32k;
 request_pool_size  4k;
 output_buffers   4 32k;
 postpone_output  1460;
- proxy_temp_path  /tmp/nginx_proxy/;
- client_body_in_file_only on;
+proxy_temp_path  /tmp/nginx_proxy/;
+client_body_in_file_only on;
 include "/usr/local/nginx/vhost/*.conf";
 }
 
