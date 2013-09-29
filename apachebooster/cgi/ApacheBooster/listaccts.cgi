@@ -8,35 +8,49 @@ BEGIN{ unshift(@INC, '/usr/local/cpanel'); }
 
 use Cpanel::Config::LoadUserDomains ();
 use Data::Dumper ();
-    local ($buffer, @pairs, $pair, $name, $value, %FORM);
-    # Read in text
-    $ENV{'REQUEST_METHOD'} =~ tr/a-z/A-Z/;
-    if ($ENV{'REQUEST_METHOD'} eq "POST")
-    {
-                 print "Content-type:text/html\r\n\r\n";
-        read(STDIN, $buffer, $ENV{'CONTENT_LENGTH'});
-    # Split information into name/value pairs
-    @pairs = split(/&/, $buffer);
-              open(FILEE, ">", "/usr/local/varnish/etc/varnish/exclude.vhost.tpl") or die $!;
-   foreach $pair (@pairs)
-   {
-        ($name, $value) = split(/=/, $pair);
-        $value =~ tr/+/ /;
-        $value =~ s/%(..)/pack("C", hex($1))/eg;
-        $FORM{$name} = $value;
-       $disable = $FORM{tmps};
-                 if ($disable ) {
-                         @disable = split(',', $disable);
-                             foreach my $val (@disable) {
-                       print FILEE "$val\n";
-   }
-    exec(`/root/dev/apachebooster/scripts/varnishvhostexclude`);
-  } else { exec(`/root/dev/apachebooster/scripts/varnishvhostexclude`); }
- 
+use Whostmgr::ACLS ();
+Whostmgr::ACLS::init_acls();
+
+
+if (!Whostmgr::ACLS::hasroot()) {
+  print "You do not have access to this plugin.\n";
+  exit();
 }
- close FILEE;
-print "<a href=\"./restart_nginx.php\">Click here to restart Apachebooster</a>";
-} else {
+local ($buffer, @pairs, $pair, $name, $value, %FORM);
+# Read in text
+$ENV{'REQUEST_METHOD'} =~ tr/a-z/A-Z/;
+if ($ENV{'REQUEST_METHOD'} eq "POST")
+{
+  print "Content-type:text/html\r\n\r\n";
+  read(STDIN, $buffer, $ENV{'CONTENT_LENGTH'});
+  # Split information into name/value pairs                                                                                                                             
+  @pairs = split(/&/, $buffer);
+  open(FILEE, ">", "/usr/local/varnish/etc/varnish/exclude.vhost.tpl") or die $!;
+  foreach $pair (@pairs)
+  {
+    ($name, $value) = split(/=/, $pair);
+    $value =~ tr/+/ /;
+    $value =~ s/%(..)/pack("C", hex($1))/eg;
+    $FORM{$name} = $value;
+    $disable = $FORM{tmps};
+    if ($disable ) 
+    {
+      @disable = split(',', $disable);
+      foreach my $val (@disable) {
+      print FILEE "$val\n";
+    }
+    `/scripts/varnishvhostexclude`;
+    } 
+    else 
+    { 
+      `/scripts/varnishvhostexclude`; 
+    }
+  }
+  close FILEE;
+  print "<a href=\"./restart_nginx.php\">Click here to restart Apachebooster</a>";
+} 
+else 
+{
 
 print "Content-type:text/html\r\n\r\n";
 
@@ -163,28 +177,26 @@ print <<HTML4;
 </html>
 HTML4
 }
-#print $conf;
-#&listdomaini2;
-#print $conf2;
-#&listdomain;
 
 sub listdomaini2
 {
-Cpanel::Config::LoadUserDomains::loaduserdomains( \%USER_DOMAINS, 1 );
-open my $fh, '<', '/usr/local/varnish/etc/varnish/exclude.vhost.tpl' or die $!;
-my @goodfile = <$fh>;
-foreach my $domain ( sort keys %USER_DOMAINS ) {
+  Cpanel::Config::LoadUserDomains::loaduserdomains( \%USER_DOMAINS, 1 );
+  open my $fh, '<', '/usr/local/varnish/etc/varnish/exclude.vhost.tpl' or die $!;
+  my @goodfile = <$fh>;
+  foreach my $domain ( sort keys %USER_DOMAINS ) {
     next if ( $domain =~ m/^\*/ );
-     next if ( grep(/^$domain/i, @goodfile) );
-                    print "<option value=\"$domain\">$domain</option>\n";
+    next if ( grep(/^$domain/i, @goodfile) );
+    print "<option value=\"$domain\">$domain</option>\n";
   }
 }
 
 sub read_tpl
 {
-    open(FILE, "/usr/local/varnish/etc/varnish/exclude.vhost.tpl");
-        while ($line = <FILE>) {
-           chomp $line;
-                        print "<option value=\"$line\">$line</option>\n";
+  open(FILE, "/usr/local/varnish/etc/varnish/exclude.vhost.tpl");
+  while ($line = <FILE>) 
+  {
+    chomp $line;
+    print "<option value=\"$line\">$line</option>\n";
   } 
 }
+
