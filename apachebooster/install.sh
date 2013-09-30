@@ -1,6 +1,6 @@
 #!/bin/bash
 nVERSION="1.4.2"
-vVERSION="3.0.4"
+vVERSION="3.0.3"
 CUDIR=`pwd`
 bin_mkdir=`which mkdir`
 bin_cp=`which cp`
@@ -17,6 +17,13 @@ YELLOW='\033[01;1;33m'
 DGREEN='\033[01;32m'                                                                                                                                         
 RESET='\033[0m'                                                                                                                                              
 clear
+
+echo -e "Cheking we are root or"
+if [ ! `id -u` = 0 ]; then
+        echo
+        echo "FAILED:::: You should login as root"
+        exit 1;
+fi
 
 echo -e  "Checking  cPanel installation.."
 
