@@ -81,27 +81,25 @@ CONFIG
 } 
 else 
 {
-    if ( $mydomain =~".lock" ) 
+    if ( $mydomain =~".lock" )
     {
-	exit(1);
-    } 
-    else 
+        $mydomain =~ s/\.\w{4}$//;
+    }
+    if ($mydomain =~/^((([a-z]|[0-9]|\-)+)\.)+([a-z])+$/i)
     {
-	if ($mydomain =~/^((([a-z]|[0-9]|\-)+)\.)+([a-z])+$/i) 
-	{
-	    $mydomains=$mydomain;
-	 } else 
-	 {
-	    if ( -f "/var/cpanel/users/" . "$mydomain" ) 
-	    {
-		$mydomains=&getusername($mydomain);
-	    } 
-	    else 
-	    {
-		die "syntax malformed";
-	    }
-	}
-      }
+        $mydomains = $mydomain;
+    }
+    else
+    {
+       if ( -f "/var/cpanel/users/" . "$mydomain" )
+       {
+          $mydomains=&getusername($mydomain);
+       }
+       else
+       {
+          die "syntax malformed";
+       }
+    }
     &create_S_Domain("$mydomains");
     my $config_file = "/tmp/apachebooster_ini";
     my $config = &ReadConfig($config_file);
