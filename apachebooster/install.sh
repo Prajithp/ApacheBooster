@@ -291,16 +291,28 @@ echo -e "$GREEN startig nginx installation $RESET"
                cd $CUDIR/packages/
                tar -xf  nginx-$nVERSION.tar.gz
                cd nginx-$nVERSION/
-               ./configure --prefix=/usr/local/nginx/ --with-http_realip_module   --http-proxy-temp-path=/tmp/nginx_proxy --http-fastcgi-temp-path=/tmp/nginx_fastcgi --http-client-body-temp-path=/tmp/nginx_client --with-http_stub_status_module &&  make  && make install
+               ./configure --prefix=/usr/local/nginx/ \
+                           --with-http_realip_module  \
+                           --with-http_mp4_module \
+                           --with-http_flv_module  \
+                           --http-proxy-temp-path=/tmp/nginx_proxy \
+                           --http-fastcgi-temp-path=/tmp/nginx_fastcgi \
+                           --http-client-body-temp-path=/tmp/nginx_client \
+                           --with-http_stub_status_module &&  make  && make install
                if [ ! -d "/usr/local/nginx/" ]; then
                    clear
                    echo  "NginX installation failed"
                    exit 1
                fi
+               if [ ! -d "/var/cache/nginx" ]; then
+                   $bin_mkdir -p "/var/cache/nginx"
+               fi
+               chown nobody:nobody /var/cache/nginx
                $bin_rm -rvf  /usr/local/nginx/conf/nginx.conf
                $bin_cp -prf  $CUDIR/conf/nginx.conf /usr/local/nginx/conf/nginx.conf
                $bin_cp -prf  $CUDIR/conf/proxy.inc /usr/local/nginx/conf/
                $bin_cp -prf  $CUDIR/conf/cloud_flare.conf /usr/local/nginx/conf/
+               $bin_cp -prf  $CUDIR/conf/micro_cache.inc /usr/local/nginx/conf/
                $bin_cp -prf  $CUDIR/conf/nginx /etc/init.d/nginx
                chmod 775 /etc/init.d/nginx
                $bin_cp -prf  $CUDIR/conf/apachebooster /etc/init.d/apachebooster

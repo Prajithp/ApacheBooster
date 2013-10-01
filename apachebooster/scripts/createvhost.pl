@@ -52,21 +52,25 @@ server {
              add_header X-Cache "HIT from Backend";
              proxy_pass http://$config->{"$listdomain"}->{'IP'}:8082;
              include proxy.inc;
+             include micro_cache.inc;
           }
           location \@backend {
              internal;
              proxy_pass http://$config->{"$listdomain"}->{'IP'}:8082;
              include proxy.inc;
+             include micro_cache.inc;
           }
           location \@custom  {
              internal;
              proxy_pass http://$config->{"$listdomain"}->{'IP'}:8082;
              include proxy.inc;
+             include micro_cache.inc;
           }
 
           location ~ .*\.(php|jsp|cgi|pl|py)?\$ {
              proxy_pass http://$config->{"$listdomain"}->{'IP'}:8082;
              include proxy.inc;
+             include micro_cache.inc;
           }
           location ~ /\.ht {
              deny all;
@@ -140,21 +144,25 @@ server {
              add_header X-Cache "HIT from Backend";
              proxy_pass http://$config->{"$listdomain"}->{'IP'}:8082;
              include proxy.inc;
+             include micro_cache.inc;
           }
           location \@backend {
              internal;
              proxy_pass http://$config->{"$listdomain"}->{'IP'}:8082;
              include proxy.inc;
+             include micro_cache.inc;
           }
           location \@custom  {
              internal;
              proxy_pass http://$config->{"$listdomain"}->{'IP'}:8082;
              include proxy.inc;
+             include micro_cache.inc;
           }
 
           location ~ .*\.(php|jsp|cgi|pl|py)?\$ {
              proxy_pass http://$config->{"$listdomain"}->{'IP'}:8082;
              include proxy.inc;
+             include micro_cache.inc;
           }
           location ~ /\.ht {
              deny all;
