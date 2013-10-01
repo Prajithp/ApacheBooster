@@ -19,7 +19,7 @@ use vars qw(@ISA @EXPORT $VERSION);    # why is this use()ing vars, for older pe
 require Exporter;                                                                                                                                                       
                                                                                                                                                                         
 @ISA     = qw(Exporter);
-@EXPORT  = qw(create_ini_file ReadConfig create_S_Domain getusername);
+@EXPORT  = qw(create_ini_file ReadConfig create_S_Domain getusername liveapi);
 $VERSION = '0.0.1';
 
 sub  create_ini_file 
@@ -237,6 +237,10 @@ sub getuserdetails
 sub getusername 
 {
   my $domain = shift;
+  if (not $domain)
+  {
+     return 0;
+  }
   foreach my $data  (liveapi("accountsummary?user=$domain")->getElementsByTagName('acct'))
   {
     $user_name =  $data->getElementsByTagName('domain')->item(0)->getFirstChild->getNodeValue;

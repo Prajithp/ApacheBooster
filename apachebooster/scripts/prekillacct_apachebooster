@@ -1,13 +1,37 @@
-#!/usr/bin/perl
+#!/usr/local/cpanel/3rdparty/bin/perl
+
 # apachebooster - prekillacct                            Copyright(c) 2011 Ndimensionz, Inc.
 #                                                           All rights Reserved.
 # prajithpalakkuda@gmail.com                                       http://ndimensionz.com http://esupports.net
 # This code is subject to the GPL  license. Unauthorized copying is prohibited
+BEGIN { unshift @INC, '/usr/local/cpanel', '/scripts/'; }
 
-my %OPTS = @ARGV;
-$USER = "$OPTS{'user'}";
+use ApacheBooster;
+use IO::Select;
+use JSON::Syck;
+use Data::Dumper;
+
+my $USER = get_passed_data();
 chomp $USER;
-my $domain =`/scripts/whmapi.pl -gu $USER`;
-$domain =~ s/\n//g;
-unlink "/usr/local/nginx/vhost/" . "$domain" . ".conf";
+my $domain_name = getusername($USER);
+$domain_name =~ s/\n//g;
+unlink "/usr/local/nginx/vhost/" . "$domain_name" . ".conf";
 system("/etc/init.d/nginx restart");
+
+
+sub get_passed_data {
+    my $raw_data   = '';
+    my $input_data = {};
+    my $selects    = IO::Select->new();
+    $selects->add( \*STDIN );
+    if ( $selects->can_read(.1) ) {
+        while (<STDIN>) {
+            $raw_data .= $_;
+        }
+        $input_data = JSON::Syck::Load($raw_data);
+    }
+    my $data_var = $input_data->{'data'};
+    my $user =  $data_var->{'user'};
+    return $user;
+}
+
