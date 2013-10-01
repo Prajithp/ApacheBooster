@@ -45,7 +45,4 @@ proxy_cache_use_stale updating;
 proxy_max_temp_file_size 1M;
  
 # Custom logging
-log_format custom '$remote_addr - $remote_user [$time_local] '
-'"$request" $status $body_bytes_sent '
-'"$http_referer" "$http_user_agent" nocache:$no_cache';
 access_log logs/microcache.log custom;
