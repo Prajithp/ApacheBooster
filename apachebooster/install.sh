@@ -36,7 +36,7 @@ fi
  
 clear
 echo -e "$GREEN          ************************************************************$RESET"
-echo -e "$GREEN          *$RESET$WHITE      ApacheBooster Installation V 1.9          $GREEN*$RESET"
+echo -e "$GREEN          *$RESET$WHITE      ApacheBooster Installation V 2.0          $GREEN*$RESET"
 echo -e "$GREEN          *$RESET$WHITE   Copyright (c) 2011-2012  https://www.prajith.in/     $GREEN*$RESET"
 echo -e "$GREEN          ************************************************************$RESET"
 echo " "
