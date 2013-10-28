@@ -313,6 +313,7 @@ echo -e "$GREEN startig nginx installation $RESET"
                $bin_cp -prf  $CUDIR/conf/proxy.inc /usr/local/nginx/conf/
                $bin_cp -prf  $CUDIR/conf/cloud_flare.conf /usr/local/nginx/conf/
                $bin_cp -prf  $CUDIR/conf/micro_cache.inc /usr/local/nginx/conf/
+               $bin_cp -prf  $CUDIR/conf/cpanel_autodiscover.conf /usr/local/nginx/conf/
                $bin_cp -prf  $CUDIR/conf/nginx /etc/init.d/nginx
                chmod 775 /etc/init.d/nginx
                $bin_cp -prf  $CUDIR/conf/apachebooster /etc/init.d/apachebooster
