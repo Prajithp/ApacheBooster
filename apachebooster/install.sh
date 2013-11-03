@@ -1,6 +1,6 @@
 #!/bin/bash
-nVERSION="1.4.1"
-vVERSION="3.0.3"
+nVERSION="1.4.3"
+vVERSION="3.0.4"
 CUDIR=`pwd`
 bin_mkdir=`which mkdir`
 bin_cp=`which cp`
@@ -309,7 +309,7 @@ echo -e "$GREEN startig nginx installation $RESET"
                fi
                chown nobody:nobody /var/cache/nginx
                $bin_rm -rvf  /usr/local/nginx/conf/nginx.conf
-               $bin_cp -prf  $CUDIR/conf/nginx.conf /usr/local/nginx/conf/nginx.conf
+               $bin_cp -prf  $CUDIR/conf/nginx.conf /usr/local/nginx/conf/
                $bin_cp -prf  $CUDIR/conf/proxy.inc /usr/local/nginx/conf/
                $bin_cp -prf  $CUDIR/conf/cloud_flare.conf /usr/local/nginx/conf/
                $bin_cp -prf  $CUDIR/conf/micro_cache.inc /usr/local/nginx/conf/
