@@ -11,7 +11,7 @@ if [ -f "/usr/local/cpanel/whostmgr/cgi/addon_nginx.cgi" ]; then
    rm -rvf /usr/local/cpanel/whostmgr/cgi/nginx
 fi
 
-if [ -f "/usr/local/cpanel/whostmgr/cgi/addon_ApacheBooster.cgi" ]; then
+if [ -f "/usr/local/cpanel/whostmgr/cgi/addon_ApacheBooster.cgi" -o -d "/usr/local/cpanel/whostmgr/cgi/ApacheBooster"  ]; then
    rm -rvf /usr/local/cpanel/whostmgr/cgi/addon_ApacheBooster.cgi
    rm -rvf /usr/local/cpanel/whostmgr/cgi/ApacheBooster
 fi

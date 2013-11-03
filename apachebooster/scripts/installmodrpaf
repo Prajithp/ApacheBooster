@@ -1,0 +1,42 @@
+#!/bin/bash
+# apachebooster - installmod-rpf                            Copyright(c) 2011 Ndimensionz, Inc.
+#                                                           All rights Reserved.
+# prajithpalakkuda@gmail.com                                       http://ndimensionz.com http://esupports.net
+# This code is subject to the GPL  license. Unauthorized copying is prohibited
+
+CUDIR=`pwd`
+cd /usr/local/src
+rm -rf mod_rpaf*
+wget -c  http://prajith.in/downloads/mod_rpaf_patch.tar.gz
+tar -xzf mod_rpaf_patch.tar.gz
+cd mod_rpaf
+/usr/local/apache/bin/apxs -cia mod_rpaf-2.0.c
+
+if grep "mod_rpaf.conf"  /usr/local/apache/conf/includes/pre_main_global.conf ; then
+  if [ -f "/usr/local/apache/conf/mod_rpaf.conf" ]; then
+    rm -rf /usr/local/apache/conf/mod_rpaf.conf
+  fi
+  /scripts/rebuildippool > /dev/null 2>&1
+  LIST=$(/scripts/ipusage | awk '{print $1}'|while read ip; do echo -ne "${ip} "; done)
+  cat > /usr/local/apache/conf/mod_rpaf.conf << EOF
+LoadModule rpaf_module        modules/mod_rpaf-2.0.so
+RPAFenable On
+RPAFproxy_ips $LIST
+RPAFsethostname On
+RPAFheader X-Real-IP
+EOF
+
+else
+  /scripts/rebuildippool
+  LIST=$(/scripts/ipusage | awk '{print $1}'|while read ip; do echo -ne "${ip} "; done)
+  cat > /usr/local/apache/conf/mod_rpaf.conf << EOF
+LoadModule rpaf_module        modules/mod_rpaf-2.0.so
+RPAFenable On
+RPAFproxy_ips $LIST
+RPAFsethostname On
+RPAFheader X-Real-IP
+EOF
+  echo "Include \"/usr/local/apache/conf/mod_rpaf.conf\""  >> /usr/local/apache/conf/includes/pre_main_global.conf
+fi
+/etc/init.d/httpd restart
+

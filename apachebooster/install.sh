@@ -314,6 +314,7 @@ echo -e "$GREEN startig nginx installation $RESET"
                $bin_cp -prf  $CUDIR/conf/cloud_flare.conf /usr/local/nginx/conf/
                $bin_cp -prf  $CUDIR/conf/micro_cache.inc /usr/local/nginx/conf/
                $bin_cp -prf  $CUDIR/conf/nginx /etc/init.d/nginx
+               $bin_cp -prf  $CUDIR/conf/cpanel_autodiscover.conf /usr/local/nginx/conf/
                chmod 775 /etc/init.d/nginx
                $bin_cp -prf  $CUDIR/conf/apachebooster /etc/init.d/apachebooster
                chmod 775 /etc/init.d/apachebooster
@@ -370,10 +371,10 @@ echo -e "$GREEN switching to apachebooster $RESET"
                echo 'apache_port=0.0.0.0:82'  >> /var/cpanel/cpanel.config
                /usr/local/cpanel/whostmgr/bin/whostmgr2 --updatetweaksettings >/dev/null 2>&1
                fi
-               /scripts/rebuildhttpdconf >/dev/null 2>&1
-               /scripts/restartsrv_httpd >/dev/null 2>&1
                /scripts/installmod-rpf >/dev/null 2>&1
                /scripts/rebuildnginxconf
+               /scripts/rebuildhttpdconf >/dev/null 2>&1
+               /scripts/restartsrv_httpd >/dev/null 2>&1
 echo -e "$GREEN starting apachebooster $RESET"
                 ps aux|grep varnish|awk '{print $2}'|xargs kill -9 >/dev/null 2>&1
                /etc/init.d/varnish restart
