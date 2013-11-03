@@ -37,10 +37,11 @@ if (! $mydomain)
 	open($file, ">/usr/local/nginx/vhost/" . $config->{"$listdomain"}->{'DOMAIN'} . ".conf");
 	my $conf = <<CONFIG;
 server {
-          access_log off;
           error_log  logs/vhost-error_log warn;
           listen $IPPORT;
           server_name $config->{"$listdomain"}->{'DOMAIN'}  $config->{"$listdomain"}->{'ALIAS'};
+          access_log /usr/local/apache/domlogs/$config->{"$listdomain"}->{'DOMAIN'}-bytes_log bytes_log;
+          access_log /usr/local/apache/domlogs/$config->{"$listdomain"}->{'DOMAIN'} combined;
           root $config->{"$listdomain"}->{'DOCUMENTROOT'};
           location / {
           location ~.*\.(3gp|gif|jpg|jpeg|png|ico|wmv|avi|asf|asx|mpg|mpeg|mp4|pls|mp3|mid|wav|swf|flv|html|htm|txt|js|css|exe|zip|tar|rar|gz|tgz|bz2|uha|7z|doc|docx|xls|xlsx|pdf|iso|woff|ttf|svg|eot)\$ {
@@ -129,10 +130,11 @@ else
 	open($file, ">/usr/local/nginx/vhost/" . $config->{"$listdomain"}->{'DOMAIN'} . ".conf");
 	my $conf = <<CONFIG;
 server {
-          access_log off;
           error_log  logs/vhost-error_log warn;
           listen $IPPORT;
           server_name $config->{"$listdomain"}->{'DOMAIN'}  $config->{"$listdomain"}->{'ALIAS'};
+          access_log /usr/local/apache/domlogs/$config->{"$listdomain"}->{'DOMAIN'}-bytes_log bytes_log;
+          access_log /usr/local/apache/domlogs/$config->{"$listdomain"}->{'DOMAIN'} combined;
           root $config->{"$listdomain"}->{'DOCUMENTROOT'};
           location / {
           location ~.*\.(3gp|gif|jpg|jpeg|png|ico|wmv|avi|asf|asx|mpg|mpeg|mp4|pls|mp3|mid|wav|swf|flv|html|htm|txt|js|css|exe|zip|tar|rar|gz|tgz|bz2|uha|7z|doc|docx|xls|xlsx|pdf|iso|woff|ttf|svg|eot)\$ {
