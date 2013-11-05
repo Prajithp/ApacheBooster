@@ -25,9 +25,11 @@ if grep "mod_rpaf.conf"  /usr/local/apache/conf/includes/pre_main_global.conf ; 
   LIST=$(/scripts/ipusage | awk '{print $1}' | while read ip; do echo -ne "RemoteIPInternalProxy ${ip}\n"; done)
   cat > /usr/local/apache/conf/mod_rpaf.conf << EOF
 LoadModule remoteip_module modules/mod_remoteip.so
+<IfModule remoteip_module>
 RemoteIPHeader X-Real-IP
 RemoteIPInternalProxy 127.0.0.1
 $LIST
+</IfModule>
 EOF
 
 else
@@ -35,10 +37,12 @@ else
   LIST=$(/scripts/ipusage | awk '{print $1}' | while read ip; do echo -ne "RemoteIPInternalProxy ${ip}\n"; done)
   cat > /usr/local/apache/conf/mod_rpaf.conf << EOF
 LoadModule remoteip_module modules/mod_remoteip.so
+<IfModule remoteip_module>
 #Mod_remoteip settings
 RemoteIPHeader X-Real-IP
 RemoteIPInternalProxy 127.0.0.1
 $LIST
+</IfModule>
 EOF
   echo "Include \"/usr/local/apache/conf/mod_rpaf.conf\""  >> /usr/local/apache/conf/includes/pre_main_global.conf
 fi
