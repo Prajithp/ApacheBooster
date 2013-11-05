@@ -11,8 +11,11 @@ use Data::Dumper;
 
 my $DOMAIN = get_passed_data();
 chomp $DOMAIN;
-system ("/scripts/createvhost.pl $DOMAIN");
-system("/etc/init.d/nginx restart");
+
+if ($DOMAIN) {
+    system ("/scripts/createvhost.pl $DOMAIN");
+    system("/etc/init.d/nginx restart");
+}
 
 
 sub get_passed_data {
