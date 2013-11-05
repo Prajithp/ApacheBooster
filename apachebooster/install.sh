@@ -359,9 +359,6 @@ echo -e "$GREEN Building varnish configuration files $RESET"
              /etc/init.d/varnish restart
              /sbin/chkconfig varnish on
              clear
-echo -e "$GREEN  Building Nginx Virtualhost, This may take a while $RESET"
-             /scripts/createvhost.pl; sleep 5
-             echo "Done....."
 
 echo -e "$GREEN switching to apachebooster $RESET"
                if grep "apache_port"  /var/cpanel/cpanel.config  > /dev/null ; then
