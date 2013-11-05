@@ -15,9 +15,10 @@ my $USER = get_passed_data();
 chomp $USER;
 my $domain_name = getusername($USER);
 $domain_name =~ s/\n//g;
-unlink "/usr/local/nginx/vhost/" . "$domain_name" . ".conf";
-system("/etc/init.d/nginx restart");
-
+if ($domain_name) {
+    unlink "/usr/local/nginx/vhost/" . "$domain_name" . ".conf";
+    system("/etc/init.d/nginx restart");
+}
 
 sub get_passed_data {
     my $raw_data   = '';
