@@ -45,4 +45,4 @@ proxy_cache_use_stale updating;
 proxy_max_temp_file_size 1M;
  
 # Custom logging
-access_log logs/microcache.log custom;
+#access_log logs/microcache.log custom;
