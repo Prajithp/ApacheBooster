@@ -6,6 +6,7 @@ bin_mkdir=`which mkdir`
 bin_cp=`which cp`
 bin_mv=`which mv`
 bin_rm=`which rm`
+dos2unix=`which dos2unix`
 nginx_prefix="/usr/local/nginx"
 varnish_prefix="/usr/local/varnish"
 RED='\033[01;31m'
@@ -50,7 +51,7 @@ exit_code()
 }
 
 echo -e "$GREEN Installing tmpwatch mailx zlib-devel pcre-devel openssl-devel $RESET"
-                 yum -y install tmpwatch mailx  zlib-devel pcre-devel openssl-devel >/dev/null 2>&1
+                 yum -y install tmpwatch mailx  zlib-devel pcre-devel openssl-devel dos2unix >/dev/null 2>&1
 clear
 
 if  which incrond > /dev/null 2>&1
@@ -309,7 +310,10 @@ echo -e "$GREEN startig nginx installation $RESET"
                fi
                chown nobody:nobody /var/cache/nginx
                $bin_rm -rvf  /usr/local/nginx/conf/nginx.conf
-               $bin_cp -prf  $CUDIR/conf/nginx.conf /usr/local/nginx/conf/
+               if [ -f /usr/bin/dos2unix ]; then 
+               $dos2unix $CUDIR/conf/nginx.conf 
+               fi
+               $bin_cp -f    $CUDIR/conf/nginx.conf /usr/local/nginx/conf/
                $bin_cp -prf  $CUDIR/conf/proxy.inc /usr/local/nginx/conf/
                $bin_cp -prf  $CUDIR/conf/cloud_flare.conf /usr/local/nginx/conf/
                $bin_cp -prf  $CUDIR/conf/micro_cache.inc /usr/local/nginx/conf/
