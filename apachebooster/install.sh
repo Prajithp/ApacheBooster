@@ -381,6 +381,11 @@ echo -e "$GREEN switching to apachebooster $RESET"
                /scripts/rebuildnginxconf
                /scripts/rebuildhttpdconf >/dev/null 2>&1
                /scripts/restartsrv_httpd >/dev/null 2>&1
+if [ -f "/etc/munin/plugins/apache_accesses" ]; then
+echo  -e "$GREEN Changing Munin Apache Plugins Port"
+		sed -i 's/80/82/g' /etc/munin/plugins/apache_accesses /etc/munin/plugins/apache_processes /etc/munin/plugins/apache_volume
+		`which service` munin-node restart >/dev/null 2>&1
+		fi
 echo -e "$GREEN starting apachebooster $RESET"
                 ps aux|grep varnish|awk '{print $2}'|xargs kill -9 >/dev/null 2>&1
                /etc/init.d/varnish restart
