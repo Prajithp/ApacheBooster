@@ -205,7 +205,7 @@ echo -e "$GREEN Removing old version $RESET"
                fi  
                $bin_rm -rvf /scripts/postwwwacct_apachebooster
                $bin_rm -rvf /scripts/installmod-rpf
-			   $bin_rm -rvf /scripts/installmodreverseproxy
+               $bin_rm -rvf /scripts//scripts/installmodreverseproxy
                $bin_rm -rvf /scripts/installnginx
                $bin_rm -rvf /scripts/posteasyapache
                $bin_rm -rvf /scripts/preeasyapache
@@ -313,7 +313,7 @@ echo -e "$GREEN startig nginx installation $RESET"
                $bin_rm -rvf  /usr/local/nginx/conf/nginx.conf
                if [ -f /usr/bin/dos2unix ]; then 
                $dos2unix $CUDIR/conf/nginx.conf
-			   $dos2unix /scripts/installmodreverseproxy
+               $dos2unix /scripts/installmodreverseproxy
                fi
                $bin_cp -f    $CUDIR/conf/nginx.conf /usr/local/nginx/conf/
                $bin_cp -prf  $CUDIR/conf/proxy.inc /usr/local/nginx/conf/
