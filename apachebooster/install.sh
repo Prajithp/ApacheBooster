@@ -193,7 +193,7 @@ echo -e "$GREEN Backing up current version $RESET"
                echo " "
                echo " "
 clear
-echo -e "$GREEN Removing olde version $RESET"
+echo -e "$GREEN Removing old version $RESET"
                if [ -f "/usr/local/cpanel/whostmgr/cgi/addon_ApacheBooster.cgi" ]; then
                     $bin_rm -rvf /usr/local/cpanel/whostmgr/cgi/addon_ApacheBooster.cgi
                     $bin_rm -rvf /usr/local/cpanel/whostmgr/cgi/ApacheBooster
@@ -205,6 +205,7 @@ echo -e "$GREEN Removing olde version $RESET"
                fi  
                $bin_rm -rvf /scripts/postwwwacct_apachebooster
                $bin_rm -rvf /scripts/installmod-rpf
+			   $bin_rm -rvf /scripts/installmodreverseproxy
                $bin_rm -rvf /scripts/installnginx
                $bin_rm -rvf /scripts/posteasyapache
                $bin_rm -rvf /scripts/preeasyapache
@@ -311,7 +312,8 @@ echo -e "$GREEN startig nginx installation $RESET"
                chown nobody:nobody /var/cache/nginx
                $bin_rm -rvf  /usr/local/nginx/conf/nginx.conf
                if [ -f /usr/bin/dos2unix ]; then 
-               $dos2unix $CUDIR/conf/nginx.conf 
+               $dos2unix $CUDIR/conf/nginx.conf
+			   $dos2unix /scripts/installmodreverseproxy
                fi
                $bin_cp -f    $CUDIR/conf/nginx.conf /usr/local/nginx/conf/
                $bin_cp -prf  $CUDIR/conf/proxy.inc /usr/local/nginx/conf/
