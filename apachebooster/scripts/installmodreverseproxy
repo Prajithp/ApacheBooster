@@ -1,0 +1,34 @@
+#!/bin/bash
+CUDIR=`pwd`
+cd /usr/local/src
+rm -rf mod_reverseproxy*
+wget https://raw.github.com/Prajithp/mod_reverseproxy/master/mod_reverseproxy.c
+/usr/local/apache/bin/apxs -i -c -n mod_reverseproxy mod_reverseproxy.c
+
+if grep "mod_rpaf.conf"  /usr/local/apache/conf/includes/pre_main_global.conf ; then
+  if [ -f "/usr/local/apache/conf/mod_rpaf.conf" ]; then
+    rm -rf /usr/local/apache/conf/mod_rpaf.conf
+  fi
+fi
+if grep "mod_reverseproxy.conf"  /usr/local/apache/conf/includes/pre_main_global.conf ; then
+  if [ -f "/usr/local/apache/conf/mod_reverseproxy.conf" ]; then
+    rm -rf /usr/local/apache/conf/mod_reverseproxy.conf
+  fi
+fi
+if [ -f "/usr/local/apache/conf/mod_remoteip.conf" ]; then
+    rm -rf /usr/local/apache/conf/mod_remoteip.conf
+  fi
+
+/scripts/rebuildippool > /dev/null 2>&1
+LIST=$(/scripts/ipusage | awk '{print $1}' | while read ip; do echo -ne "ReverseProxyRemoteIPTrusted ${ip}\n"; done)
+cat > /usr/local/apache/conf/mod_reverseproxy.conf << EOF
+
+LoadModule reverseproxy_module modules/mod_reverseproxy.so
+<IfModule reverseproxy_module>
+ReverseProxyRemoteIPHeader X-Real-IP
+ReverseProxyRemoteIPTrusted 127.0.0.1
+$LIST
+</IfModule>
+EOF
+  echo "Include \"/usr/local/apache/conf/mod_reverseproxy.conf\"">> /usr/local/apache/conf/includes/pre_main_global.conf
+/etc/init.d/httpd restart
