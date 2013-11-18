@@ -205,7 +205,7 @@ echo -e "$GREEN Removing old version $RESET"
                fi  
                $bin_rm -rvf /scripts/postwwwacct_apachebooster
                $bin_rm -rvf /scripts/installmod-rpf
-               $bin_rm -rvf /scripts//scripts/installmodreverseproxy
+               $bin_rm -rvf /scripts/installmodreverseproxy
                $bin_rm -rvf /scripts/installnginx
                $bin_rm -rvf /scripts/posteasyapache
                $bin_rm -rvf /scripts/preeasyapache
