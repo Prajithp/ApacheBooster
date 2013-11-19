@@ -42,6 +42,8 @@ rm -rvf /scripts/whmapi.pl
 rm -rvf /scripts/updateapachebooster
 rm -rvf /scripts/createvhost.pl
 rm -rvf /scripts/installmodrpaf
+rm -rvf /scripts/account_modify_pre_apachebooster
+rm -rvf /scripts/account_modify_post_apachebooster
 if [ -e "/scripts/ApacheBooster.pm" ]; then
    rm -rvf /scripts/ApacheBooster.pm
 fi

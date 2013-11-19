@@ -186,6 +186,8 @@ echo -e "$GREEN Removing olde version $RESET"
                if [ -e "/usr/local/cpanel/Cpanel/ApacheBooster.pm" ]; then
                   rm -rvf /usr/local/cpanel/Cpanel/ApacheBooster.pm
                fi
+               $bin_rm -rvf /scripts/account_modify_pre_apachebooster
+               $bin_rm -rvf /scripts/account_modify_post_apachebooster
                $bin_rm -rvf /scripts/postwwwacct_apachebooster
                $bin_rm -rvf /scripts/installmod-rpf
                $bin_rm -rvf /scripts/installmodreverseproxy
@@ -220,6 +222,12 @@ echo -e "$GREEN Removing olde version $RESET"
                $bin_rm -rvf /usr/local/cpanel/hooks/park/unpark
                $bin_rm -rvf $nginx_prefix
                $bin_rm -rvf $varnish_prefix
+               if [ -f "/usr/local/cpanel/bin/manage_hooks" ]; then
+	          /usr/local/cpanel/bin/manage_hooks  del script /scripts/postwwwacct_apachebooster --describe "Apachebooster" --category Whostmgr --event Accounts::Create --stage post >/dev/null 2>&1
+                  /usr/local/cpanel/bin/manage_hooks  del script /scripts/prekillacct_apachebooster --describe "Apachebooster" --category Whostmgr --event Accounts::Remove --stage pre >/dev/null 2>&1
+                  /usr/local/cpanel/bin/manage_hooks  del script /scripts/account_modify_post_apachebooster  --describe "Apachebooster" --category Whostmgr --event Accounts::Modify  --stage post >/dev/null 2>&1
+                 /usr/local/cpanel/bin/manage_hooks  del script /scripts/account_modify_pre_apachebooster  --describe "Apachebooster" --category Whostmgr --event Accounts::Modify  --stage pre >/dev/null 2>&1
+              fi
                cat /var/spool/cron/root | egrep -v "checkuserdomains|restartcheck|tmpwatch" > /tmp/cron.tmp
                mv -f /tmp/cron.tmp /var/spool/cron/root
 clear
