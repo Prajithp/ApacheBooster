@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# apachebooster - installmod-rpf                            Copyright(c) 2011 Ndimensionz, Inc.
+#                                                           All rights Reserved.
+# prajithpalakkuda@gmail.com                                       http://ndimensionz.com http://esupports.net
+# This code is subject to the GPL  license. Unauthorized copying is prohibited
+
+CUDIR=`pwd`
+cd /usr/local/src
+rm -rf mod_reverseproxy*
+
+wget https://raw.github.com/Prajithp/mod_reverseproxy/master/mod_reverseproxy.c
+
+/usr/local/apache/bin/apxs -i -c -n mod_reverseproxy.so mod_reverseproxy.c
+
+if grep "mod_rpaf.conf"  /usr/local/apache/conf/includes/pre_main_global.conf ; then
+  if [ -f "/usr/local/apache/conf/mod_rpaf.conf" ]; then
+    rm -rf /usr/local/apache/conf/mod_rpaf.conf
+  fi
+
+  /scripts/rebuildippool > /dev/null 2>&1
+  LIST=$(/scripts/ipusage | awk '{print $1}' | while read ip; do echo -ne "ReverseProxyRemoteIPTrusted ${ip}\n"; done)
+  cat > /usr/local/apache/conf/mod_rpaf.conf << EOF
+LoadModule reverseproxy_module modules/mod_reverseproxy.so
+<IfModule reverseproxy_module>
+  ReverseProxyEnable On
+  ReverseProxyRemoteIPHeader X-Real-IP
+  ReverseProxyRemoteIPTrusted 127.0.0.1
+  $LIST
+</IfModule>
+EOF
+
+else
+  /scripts/rebuildippool > /dev/null 2>&1
+  LIST=$(/scripts/ipusage | awk '{print $1}' | while read ip; do echo -ne "ReverseProxyRemoteIPTrusted ${ip}\n"; done)
+  cat > /usr/local/apache/conf/mod_rpaf.conf << EOF
+LoadModule reverseproxy_module modules/mod_reverseproxy.so
+<IfModule reverseproxy_module>
+  ReverseProxyEnable On
+  ReverseProxyRemoteIPHeader X-Real-IP
+  ReverseProxyRemoteIPTrusted 127.0.0.1
+  $LIST
+</IfModule>
+EOF
+  echo "Include \"/usr/local/apache/conf/mod_rpaf.conf\""  >> /usr/local/apache/conf/includes/pre_main_global.conf
+fi
+/etc/init.d/httpd restart

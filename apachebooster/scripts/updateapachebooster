@@ -14,7 +14,7 @@ else
         cd /usr/local/src
         rm -rf /usr/local/src/apachebooster*
         wget -c http://prajith.in/downloads/apachebooster.tar.gz
-         tar -zxf apachebooster.tar.gz
+        tar -zxf apachebooster.tar.gz
         cd apachebooster*
         bash install.sh
         ps aux|grep varnish|awk '{print $2}'|xargs kill -9

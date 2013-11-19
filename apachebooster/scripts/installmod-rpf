@@ -9,6 +9,6 @@ HTTPD_VER=`/usr/local/apache/bin/httpd -v| grep "Server version:"|cut -d "/" -f2
 if [ "$HTTPD_VER" != "2.4" ]; then
    /scripts/installmodrpaf
 else
-  /scripts/installmodremoteip
+  /scripts/installmodreverseproxy
 fi
 

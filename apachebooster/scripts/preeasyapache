@@ -6,6 +6,3 @@
 
 /bin/grep -v 'mod_rpaf.conf'  /usr/local/apache/conf/includes/pre_main_global.conf  > /tmp/nginx.txt
 /bin/cat /tmp/nginx.txt > /usr/local/apache/conf/includes/pre_main_global.conf
-
-
-

@@ -1,0 +1,32 @@
+#!/usr/bin/perl 
+
+BEGIN { unshift @INC, '/usr/local/cpanel'; }
+
+use Cpanel::ApacheBooster;
+use IO::Select;
+use JSON::Syck;
+use Data::Dumper;
+
+
+my $domain = get_passed_data();
+if ($domain) {
+  system("/scripts/createvhost.pl $domain");
+}
+
+
+sub get_passed_data {
+    my $raw_data   = '';
+    my $input_data = {};
+    my $selects    = IO::Select->new();
+    $selects->add( \*STDIN );
+    if ( $selects->can_read(.1) ) {
+        while (<STDIN>) {
+            $raw_data .= $_;
+        }
+        $input_data = JSON::Syck::Load($raw_data);
+    }
+    my $domain_name = $input_data->{data}->{domain};
+    return $domain_name;
+}
+
+

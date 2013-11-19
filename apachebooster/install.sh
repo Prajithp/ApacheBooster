@@ -19,10 +19,9 @@ DGREEN='\033[01;32m'
 RESET='\033[0m'                                                                                                                                              
 clear
 
-echo -e "Cheking we are root or"
 if [ ! `id -u` = 0 ]; then
         echo
-        echo "FAILED:::: You should login as root"
+        echo "FAILED:::: You must login as root"
         exit 1;
 fi
 
@@ -37,8 +36,8 @@ fi
  
 clear
 echo -e "$GREEN          ************************************************************$RESET"
-echo -e "$GREEN          *$RESET$WHITE      ApacheBooster Installation V 2.0          $GREEN*$RESET"
-echo -e "$GREEN          *$RESET$WHITE   Copyright (c) 2011-2012  https://www.prajith.in/     $GREEN*$RESET"
+echo -e "$GREEN          *$RESET$WHITE      ApacheBooster Installation V 2.1          $GREEN*$RESET"
+echo -e "$GREEN          *$RESET$WHITE   Copyright (c) 2012-2013  https://www.prajith.in/     $GREEN*$RESET"
 echo -e "$GREEN          ************************************************************$RESET"
 echo " "
 echo " "
@@ -171,28 +170,6 @@ echo -e "$GREEN Checking for previous installation .. $RESET"
       if [ -d  "/usr/local/cpanel/whostmgr/cgi/ApacheBooster" -o -f "/usr/local/cpanel/whostmgr/cgi/addon_nginx.cgi" ]; then
                echo -e "$GREEN ApacheBooster already installed $RESET"
 clear
-echo -e "$GREEN Backing up current version $RESET"
-               cd /root/
-               $bin_mkdir -p /root/apachebooster-archive
-               cd /root/apachebooster-archive
-               $bin_cp -prf $nginx_prefix/conf /root/apachebooster-archive/
-               $bin_cp -prf $nginx_prefix/vhost /root/apachebooster-archive/
-               $bin_cp -prf $varnish_prefix/etc/varnish /root/apachebooster-archive/
-               $bin_cp -prf $varnish_prefix/var /root/apachebooster-archive/
-               $bin_cp -prf /etc/sysconfig/varnish /root/apachebooster-archive/sys.varnish
-               if [ -f "/usr/local/cpanel/whostmgr/cgi/addon_ApacheBooster.cgi" ]; then
-                  $bin_cp -prf /usr/local/cpanel/whostmgr/cgi/addon_ApacheBooster.cgi /root/apachebooster-archive/
-               fi
-               if [ -d "/usr/local/cpanel/whostmgr/cgi/ApacheBooster" ]; then
-                  $bin_cp -prf /usr/local/cpanel/whostmgr/cgi/ApacheBooster /root/apachebooster-archive/nginx-cgi
-               else 
-                  $bin_cp -prf /usr/local/cpanel/whostmgr/cgi/addon_nginx.cgi /root/apachebooster-archive/
-                  $bin_cp -prf /usr/local/cpanel/whostmgr/cgi/nginx /root/apachebooster-archive/nginx-cgi
-               fi
-               echo -e "Backup completed"
-               echo " "
-               echo " "
-clear
 echo -e "$GREEN Removing olde version $RESET"
                if [ -f "/usr/local/cpanel/whostmgr/cgi/addon_ApacheBooster.cgi" ]; then
                     $bin_rm -rvf /usr/local/cpanel/whostmgr/cgi/addon_ApacheBooster.cgi
@@ -202,9 +179,20 @@ echo -e "$GREEN Removing olde version $RESET"
                elif [ -d "/usr/local/cpanel/whostmgr/cgi/nginx" ]; then 
                     $bin_rm -rvf /usr/local/cpanel/whostmgr/cgi/addon_nginx.cgi
                     $bin_rm -rvf /usr/local/cpanel/whostmgr/cgi/nginx
-               fi  
+               fi
+               if [ -e "/scripts/ApacheBooster.pm" ]; then
+                  rm -rvf /scripts/ApacheBooster.pm
+               fi
+               if [ -e "/usr/local/cpanel/Cpanel/ApacheBooster.pm" ]; then
+                  rm -rvf /usr/local/cpanel/Cpanel/ApacheBooster.pm
+               fi
                $bin_rm -rvf /scripts/postwwwacct_apachebooster
                $bin_rm -rvf /scripts/installmod-rpf
+               $bin_rm -rvf /scripts/installmodreverseproxy
+               $bin_rm -rvf /scripts/installmodrpaf
+               if [ -f "/scripts/installmodremoteip" ]; then
+                  $bin_rm -rvf /scripts/installmodremoteip
+               fi
                $bin_rm -rvf /scripts/installnginx
                $bin_rm -rvf /scripts/posteasyapache
                $bin_rm -rvf /scripts/preeasyapache
@@ -240,6 +228,7 @@ echo -e "$GREEN Installing scripts $RESET"
                chown -R root.root conf/
                chown -R root.root scripts/
                chown -R root.root cgi/
+               $bin_cp -prf conf/ApacheBooster.pm /usr/local/cpanel/Cpanel/
                chmod 700 scripts/* -R
                $bin_cp -prf  scripts/* /scripts/
                $bin_cp -prf  cgi/* /usr/local/cpanel/whostmgr/docroot/cgi/
@@ -253,6 +242,7 @@ echo -e "$GREEN Installing scripts $RESET"
                chown -R root.root conf/
                chown -R root.root scripts/
                chown -R root.root cgi/
+               $bin_cp -prf conf/ApacheBooster.pm /usr/local/cpanel/Cpanel/
                chmod 700 scripts/* -R
                $bin_cp -prf  scripts/* /scripts/
                $bin_cp -prf  cgi/* /usr/local/cpanel/whostmgr/docroot/cgi/
@@ -273,6 +263,8 @@ echo -e "$GREEN Installing WHM/cPanel hooks $RESET"
                $bin_cp -prvf hooks/unpark          /usr/local/cpanel/hooks/park/unpark
                /usr/local/cpanel/bin/manage_hooks  add script /scripts/postwwwacct_apachebooster --describe "Apachebooster" --category Whostmgr --event Accounts::Create --stage post >/dev/null 2>&1
                /usr/local/cpanel/bin/manage_hooks  add script /scripts/prekillacct_apachebooster --describe "Apachebooster" --category Whostmgr --event Accounts::Remove --stage pre >/dev/null 2>&1
+              /usr/local/cpanel/bin/manage_hooks  add script /scripts/account_modify_post_apachebooster  --describe "Apachebooster" --category Whostmgr --event Accounts::Modify  --stage post >/dev/null 2>&1
+              /usr/local/cpanel/bin/manage_hooks  add script /scripts/account_modify_pre_apachebooster  --describe "Apachebooster" --category Whostmgr --event Accounts::Modify  --stage pre >/dev/null 2>&1
 sed -i "s/$HTTPD -k .*/\\0\\n\\/etc\\/init.d\\/varnish \$ARGV/g" /usr/local/apache/bin/apachectl
 sed -i "s/$HTTPD -k .*/\\0\\n\\/etc\\/init.d\\/nginx \$ARGV/g" /usr/local/apache/bin/apachectl
 sed -i "s/$HTTPD -k .*/\\0\\n\\/etc\\/init.d\\/nginx \$ARGV/g" /etc/init.d/httpd
@@ -293,6 +285,7 @@ echo -e "$GREEN startig nginx installation $RESET"
                tar -xf  nginx-$nVERSION.tar.gz
                cd nginx-$nVERSION/
                ./configure --prefix=/usr/local/nginx/ \
+                           --with-ipv6 \
                            --with-http_realip_module  \
                            --with-http_mp4_module \
                            --with-http_flv_module  \
@@ -311,9 +304,9 @@ echo -e "$GREEN startig nginx installation $RESET"
                chown nobody:nobody /var/cache/nginx
                $bin_rm -rvf  /usr/local/nginx/conf/nginx.conf
                if [ -f /usr/bin/dos2unix ]; then 
-               $dos2unix $CUDIR/conf/nginx.conf 
+                  $dos2unix $CUDIR/conf/nginx.conf 
                fi
-               $bin_cp -f    $CUDIR/conf/nginx.conf /usr/local/nginx/conf/
+               $bin_cp -prf  $CUDIR/conf/nginx.conf /usr/local/nginx/conf/
                $bin_cp -prf  $CUDIR/conf/proxy.inc /usr/local/nginx/conf/
                $bin_cp -prf  $CUDIR/conf/cloud_flare.conf /usr/local/nginx/conf/
                $bin_cp -prf  $CUDIR/conf/micro_cache.inc /usr/local/nginx/conf/
@@ -364,16 +357,21 @@ echo -e "$GREEN Building varnish configuration files $RESET"
              /sbin/chkconfig varnish on
              clear
 echo -e "$GREEN  Building Nginx Virtualhost, This may take a while $RESET"
-             /scripts/createvhost.pl; sleep 5
+             /scripts/createvhost.pl;
              echo "Done....."
 
 echo -e "$GREEN switching to apachebooster $RESET"
                if grep "apache_port"  /var/cpanel/cpanel.config  > /dev/null ; then
-               sed -i  's/apache_port=0.0.0.0:80/apache_port=0.0.0.0:82/g'  /var/cpanel/cpanel.config
-               /usr/local/cpanel/whostmgr/bin/whostmgr2 --updatetweaksettings >/dev/null 2>&1
+                  sed -i  's/apache_port=0.0.0.0:80/apache_port=0.0.0.0:82/g'  /var/cpanel/cpanel.config
+                  /usr/local/cpanel/whostmgr/bin/whostmgr2 --updatetweaksettings >/dev/null 2>&1
                else
-               echo 'apache_port=0.0.0.0:82'  >> /var/cpanel/cpanel.config
-               /usr/local/cpanel/whostmgr/bin/whostmgr2 --updatetweaksettings >/dev/null 2>&1
+                  echo 'apache_port=0.0.0.0:82'  >> /var/cpanel/cpanel.config
+                  /usr/local/cpanel/whostmgr/bin/whostmgr2 --updatetweaksettings >/dev/null 2>&1
+               fi
+               if [ -f "/etc/munin/plugins/apache_accesses" ]; then
+                  echo  -e "$GREEN Changing Munin Apache Plugins Port $RESET"
+                  sed -i 's/80/82/g' /etc/munin/plugins/apache_accesses /etc/munin/plugins/apache_processes /etc/munin/plugins/apache_volume
+                  `which service` munin-node restart >/dev/null 2>&1
                fi
                /scripts/installmod-rpf >/dev/null 2>&1
                /scripts/rebuildnginxconf

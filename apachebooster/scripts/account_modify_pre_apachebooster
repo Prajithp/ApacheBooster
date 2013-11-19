@@ -1,0 +1,34 @@
+#!/usr/bin/perl 
+
+BEGIN { unshift @INC, '/usr/local/cpanel'; }
+
+use Cpanel::ApacheBooster;
+use IO::Select;
+use JSON::Syck;
+use Data::Dumper;
+
+
+my $username = get_passed_data();
+if ($username) {
+  my $domain = Cpanel::ApacheBooster::get_domain_by_username($username);
+  my $domain_conf = '/usr/local/nginx/vhost/' . $domain . '.conf';
+  if ( -f $domain_conf ) {
+    unlink("$domain_conf");
+  }
+}
+
+
+sub get_passed_data {
+    my $raw_data   = '';
+    my $input_data = {};
+    my $selects    = IO::Select->new();
+    $selects->add( \*STDIN );
+    if ( $selects->can_read(.1) ) {
+        while (<STDIN>) {
+            $raw_data .= $_;
+        }
+        $input_data = JSON::Syck::Load($raw_data);
+    }
+    my $domain_name = $input_data->{data}->{user};
+    return $domain_name;
+}

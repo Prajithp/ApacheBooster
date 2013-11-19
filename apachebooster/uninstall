@@ -16,9 +16,15 @@ if [ -f "/usr/local/cpanel/whostmgr/cgi/addon_ApacheBooster.cgi" -o -d "/usr/loc
    rm -rvf /usr/local/cpanel/whostmgr/cgi/ApacheBooster
 fi
 #BEGIN scripts section
+
+if [ -e "/scripts/installmodreverseproxy" ]; then
+   rm -rvf /scripts/installmodreverseproxy
+fi
+if [ -e "/scripts/installmodremoteip" ]; then
+   rm -rvf /scripts/installmodremoteip
+fi
 rm -rvf /scripts/postwwwacct_apachebooster
 rm -rvf /scripts/installmod-rpf
-rm -rvf /scripts/installnginx
 rm -rvf /scripts/preeasyapache
 rm -rvf /scripts/rebuildnginxconf
 rm -rvf /scripts/rebuildvhost
@@ -35,7 +41,13 @@ rm -rvf /scripts/prekillacct_apachebooster
 rm -rvf /scripts/whmapi.pl
 rm -rvf /scripts/updateapachebooster
 rm -rvf /scripts/createvhost.pl
-rm -rvf /scripts/ApacheBooster.pm
+rm -rvf /scripts/installmodrpaf
+if [ -e "/scripts/ApacheBooster.pm" ]; then
+   rm -rvf /scripts/ApacheBooster.pm
+fi
+if [ -e "/usr/local/cpanel/Cpanel/ApacheBooster.pm" ]; then
+   rm -rvf /usr/local/cpanel/Cpanel/ApacheBooster.pm
+fi
 rm -rvf /scripts/restartsrv_varnish
 rm -rvf /scripts/csf_fix.pl
 rm -rvf /scripts/after_apache_make_install
@@ -65,6 +77,10 @@ sed -i  's/apache_port=0.0.0.0:82/apache_port=0.0.0.0:80/g'  /var/cpanel/cpanel.
 /usr/local/cpanel/whostmgr/bin/whostmgr2 --updatetweaksettings >/dev/null 2>&1
 /scripts/rebuildhttpdconf
 #END Apache Conf
+if [ -f "/etc/munin/plugins/apache_accesses" ]; then
+   sed -i 's/82/80/g' /etc/munin/plugins/apache_accesses /etc/munin/plugins/apache_processes /etc/munin/plugins/apache_volume
+   `which service` munin-node restart >/dev/null 2>&1
+fi
 
 unset mv
 cat /var/spool/cron/root | egrep -v "nginx_client" > /tmp/cron.tmp
@@ -74,10 +90,14 @@ cat /var/spool/incron/root | egrep -v "createvhost.pl|restartcheck" > /var/spool
 if [ -f "/usr/local/cpanel/bin/manage_hooks" ]; then
    /usr/local/cpanel/bin/manage_hooks  del script /scripts/postwwwacct_apachebooster --describe "Apachebooster" --category Whostmgr --event Accounts::Create --stage post >/dev/null 2>&1
    /usr/local/cpanel/bin/manage_hooks  del script /scripts/prekillacct_apachebooster --describe "Apachebooster" --category Whostmgr --event Accounts::Remove --stage pre >/dev/null 2>&1
+   /usr/local/cpanel/bin/manage_hooks  del script /scripts/account_modify_post_apachebooster  --describe "Apachebooster" --category Whostmgr --event Accounts::Modify  --stage post >/dev/null 2>&1
+   /usr/local/cpanel/bin/manage_hooks  del script /scripts/account_modify_pre_apachebooster  --describe "Apachebooster" --category Whostmgr --event Accounts::Modify  --stage pre >/dev/null 2>&1
 fi
+
 sed -i '/\/etc\/init.*.varnish/d' /etc/init.d/httpd
 sed -i '/\/etc\/init.*.varnish/d' /usr/local/apache/bin/apachectl
 sed -i '/\/etc\/init.*.nginx/d' /etc/init.d/httpd
 sed -i '/\/etc\/init.*.nginx/d' /usr/local/apache/bin/apachectl
+
 chkconfig apachebooster off
 /scripts/restartsrv_httpd
