@@ -92,7 +92,7 @@ echo "# install the module using CPAN or /scripts/perlinstaller. #"
 echo "############################################################"
 echo ""
 echo ""
-REQUIREDMODULES=( "IPC::Open3" "JSON::Syck" "Data::Dumper" "XML::DOM" "Getopt::Long" "XML::Simple" )
+REQUIREDMODULES=( "IPC::Open3" "JSON::Syck" "Data::Dumper" "XML::DOM" "Getopt::Long" "XML::Simple" "JSON" "IO::Select" )
 NEEDSCHECK=()
 NOTINSTALLED=()
 ALLINSTALLED=1
@@ -271,12 +271,12 @@ echo -e "$GREEN Installing WHM/cPanel hooks $RESET"
                $bin_cp -prvf hooks/unpark          /usr/local/cpanel/hooks/park/unpark
                /usr/local/cpanel/bin/manage_hooks  add script /scripts/postwwwacct_apachebooster --describe "Apachebooster" --category Whostmgr --event Accounts::Create --stage post >/dev/null 2>&1
                /usr/local/cpanel/bin/manage_hooks  add script /scripts/prekillacct_apachebooster --describe "Apachebooster" --category Whostmgr --event Accounts::Remove --stage pre >/dev/null 2>&1
-              /usr/local/cpanel/bin/manage_hooks  add script /scripts/account_modify_post_apachebooster  --describe "Apachebooster" --category Whostmgr --event Accounts::Modify  --stage post >/dev/null 2>&1
-              /usr/local/cpanel/bin/manage_hooks  add script /scripts/account_modify_pre_apachebooster  --describe "Apachebooster" --category Whostmgr --event Accounts::Modify  --stage pre >/dev/null 2>&1
-sed -i "s/$HTTPD -k .*/\\0\\n\\/etc\\/init.d\\/varnish \$ARGV/g" /usr/local/apache/bin/apachectl
-sed -i "s/$HTTPD -k .*/\\0\\n\\/etc\\/init.d\\/nginx \$ARGV/g" /usr/local/apache/bin/apachectl
-sed -i "s/$HTTPD -k .*/\\0\\n\\/etc\\/init.d\\/nginx \$ARGV/g" /etc/init.d/httpd
-sed -i "s/$HTTPD -k .*/\\0\\n\\/etc\\/init.d\\/varnish \$ARGV/g" /etc/init.d/httpd
+               /usr/local/cpanel/bin/manage_hooks  add script /scripts/account_modify_post_apachebooster  --describe "Apachebooster" --category Whostmgr --event Accounts::Modify  --stage post >/dev/null 2>&1
+               /usr/local/cpanel/bin/manage_hooks  add script /scripts/account_modify_pre_apachebooster  --describe "Apachebooster" --category Whostmgr --event Accounts::Modify  --stage pre >/dev/null 2>&1
+               sed -i "s/$HTTPD -k .*/\\0\\n\\/etc\\/init.d\\/varnish \$ARGV/g" /usr/local/apache/bin/apachectl
+               sed -i "s/$HTTPD -k .*/\\0\\n\\/etc\\/init.d\\/nginx \$ARGV/g" /usr/local/apache/bin/apachectl
+               sed -i "s/$HTTPD -k .*/\\0\\n\\/etc\\/init.d\\/nginx \$ARGV/g" /etc/init.d/httpd
+               sed -i "s/$HTTPD -k .*/\\0\\n\\/etc\\/init.d\\/varnish \$ARGV/g" /etc/init.d/httpd
 
 clear
 echo -e "$GREEN Registering  hooks $RESET"
@@ -407,6 +407,6 @@ echo -e "$GREEN-----------------------------------------------------------------
 
 if [ "$ERROR" ]; then
     echo -e "$GREEN--------------------------------------------------------------------------------------$RESET"
-     echo -e "$RESET$RED        Please enable port 82,8082 and 6082 in your firewall $RED.$RESET"
+    echo -e "$RESET$RED        Please enable port 82,8082 and 6082 in your firewall $RED.$RESET"
     echo -e "$GREEN--------------------------------------------------------------------------------------$RESET"
 fi
