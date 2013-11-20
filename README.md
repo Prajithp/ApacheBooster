@@ -20,7 +20,7 @@ Unlike traditional servers, Nginx doesn’t rely on threads to handle requests. 
 ```bash
 $> git clone https://github.com/Prajithp/ApacheBooster.git
               OR
-$> wget wget https://github.com/Prajithp/ApacheBooster/archive/master.zip -O ApacheBooster.zip
+$> wget https://github.com/Prajithp/ApacheBooster/archive/master.zip -O ApacheBooster.zip
 $> unzip ApacheBooster.zip
 ```
 
