@@ -326,7 +326,7 @@ echo -e "$GREEN Nginx installation completed $RESET"
 clear
 echo -e "$GREEN Rising system file descriptors $RESET"
 			sed -i 's/1024/10240/g' /etc/security/limits.d/90-nproc.conf
-			echo "$RED Default /etc/security/limits.conf will be saved as /etc/security/limits.conf.backup $RESET"
+			echo -e "$RED Default /etc/security/limits.conf will be saved as /etc/security/limits.conf.backup $RESET"
 			sleep 2
 			$bin_cp /etc/security/limits.conf /etc/security/limits.conf.backup
 			echo "nobody soft nofile 32768" >>/etc/security/limits.conf
