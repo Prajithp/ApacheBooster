@@ -102,4 +102,6 @@ sed -i '/\/etc\/init.*.nginx/d' /etc/init.d/httpd
 sed -i '/\/etc\/init.*.nginx/d' /usr/local/apache/bin/apachectl
 
 chkconfig apachebooster off
+service incrond stop
+chkconfig incrond off
 /scripts/restartsrv_httpd
