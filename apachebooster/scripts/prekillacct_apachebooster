@@ -4,20 +4,20 @@
 #                                                           All rights Reserved.
 # prajithpalakkuda@gmail.com                                       http://ndimensionz.com http://esupports.net
 # This code is subject to the GPL  license. Unauthorized copying is prohibited
-BEGIN { unshift @INC, '/usr/local/cpanel', '/scripts/'; }
 
-use ApacheBooster;
+use Cpanel::ApacheBooster;
 use IO::Select;
 use JSON::Syck;
 use Data::Dumper;
 
-my $USER = get_passed_data();
-chomp $USER;
-my $domain_name = getusername($USER);
-$domain_name =~ s/\n//g;
-if ($domain_name) {
-    unlink "/usr/local/nginx/vhost/" . "$domain_name" . ".conf";
+my $user_name = get_passed_data();
+
+if ($user_name) {
+  my $domain_name = Cpanel::ApacheBooster::get_domain_by_username($user_name);
+  if ($domain_name) {
+    unlink "/usr/local/nginx/vhost/" . $domain_name . ".conf";
     system("/etc/init.d/nginx restart");
+  }
 }
 
 sub get_passed_data {
@@ -31,8 +31,7 @@ sub get_passed_data {
         }
         $input_data = JSON::Syck::Load($raw_data);
     }
-    my $data_var = $input_data->{'data'};
-    my $user =  $data_var->{'user'};
-    return $user;
+    my $username = $input_data->{data}->{user};
+    return $username;
 }
 
