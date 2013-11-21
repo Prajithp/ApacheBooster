@@ -1,6 +1,7 @@
 #!/bin/bash
 nVERSION="1.4.4"
 vVERSION="3.0.4"
+pcreVERSION="8.33"
 CUDIR=`pwd`
 bin_mkdir=`which mkdir`
 bin_cp=`which cp`
@@ -291,9 +292,11 @@ clear
 echo -e "$GREEN startig nginx installation $RESET"
                cd $CUDIR/packages/
                tar -xf  nginx-$nVERSION.tar.gz
+               tar -xf  pcre-$pcreVERSION.tar.gz
                cd nginx-$nVERSION/
                ./configure --prefix=/usr/local/nginx/ \
                            --with-ipv6 \
+                           --with-pcre=$CUDIR/packages/pcre-$pcreVERSION \
                            --with-http_realip_module  \
                            --with-http_mp4_module \
                            --with-http_flv_module  \
@@ -306,10 +309,6 @@ echo -e "$GREEN startig nginx installation $RESET"
                    echo  "NginX installation failed"
                    exit 1
                fi
-               if [ ! -d "/var/cache/nginx" ]; then
-                   $bin_mkdir -p "/var/cache/nginx"
-               fi
-               chown nobody:nobody /var/cache/nginx
                $bin_rm -rvf  /usr/local/nginx/conf/nginx.conf
                if [ -f /usr/bin/dos2unix ]; then 
                   $dos2unix $CUDIR/conf/nginx.conf 
@@ -317,7 +316,6 @@ echo -e "$GREEN startig nginx installation $RESET"
                $bin_cp -prf  $CUDIR/conf/nginx.conf /usr/local/nginx/conf/
                $bin_cp -prf  $CUDIR/conf/proxy.inc /usr/local/nginx/conf/
                $bin_cp -prf  $CUDIR/conf/cloud_flare.conf /usr/local/nginx/conf/
-               $bin_cp -prf  $CUDIR/conf/micro_cache.inc /usr/local/nginx/conf/
                $bin_cp -prf  $CUDIR/conf/nginx /etc/init.d/nginx
                $bin_cp -prf  $CUDIR/conf/cpanel_autodiscover.conf /usr/local/nginx/conf/
                chmod 775 /etc/init.d/nginx
