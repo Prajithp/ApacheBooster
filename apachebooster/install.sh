@@ -296,7 +296,7 @@ echo -e "$GREEN startig nginx installation $RESET"
                cd nginx-$nVERSION/
                ./configure --prefix=/usr/local/nginx/ \
                            --with-ipv6 \
-                           --with-pcre=$CUDIR/packages/pcre-$pcreVERSION \
+                           --with-pcre=$CUDIR/../packages/pcre-$pcreVERSION \
                            --with-http_realip_module  \
                            --with-http_mp4_module \
                            --with-http_flv_module  \
