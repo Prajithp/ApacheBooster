@@ -324,7 +324,17 @@ echo -e "$GREEN startig nginx installation $RESET"
                chkconfig apachebooster on
 echo -e "$GREEN Nginx installation completed $RESET"
 clear
-echo -e "$GREEN startig varnish installation $RESET"
+echo -e "$GREEN Rising system file descriptors $RESET"
+			sed -i 's/1024/10240/g' /etc/security/limits.d/90-nproc.conf
+			echo "$RED Default /etc/security/limits.conf will be saved as /etc/security/limits.conf.backup $RESET"
+			sleep 2
+			$bin_cp /etc/security/limits.conf /etc/security/limits.conf.backup
+			echo "nobody soft nofile 32768" >>/etc/security/limits.conf
+			echo "nobody hard nofile 32768" >>/etc/security/limits.conf
+			echo "root soft nofile 32768" >>/etc/security/limits.conf
+			echo "root hard nofile 32768" >>/etc/security/limits.conf
+clear
+			echo -e "$GREEN startig varnish installation $RESET"
               cd $CUDIR/packages/
               tar -zxf docutils-0.7.tar.gz
               cd docutils-0.7/

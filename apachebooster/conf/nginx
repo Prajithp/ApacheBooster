@@ -18,6 +18,7 @@
 # Check that networking is up.
 [ "$NETWORKING" = "no" ] && exit 0
 
+ulimit -n 32768
 nginx="/usr/local/nginx/sbin/nginx"
 prog=$(basename $nginx)
 
