@@ -365,6 +365,7 @@ echo -e "$GREEN Creating cron $RESET"
               echo '/var/cpanel/users IN_MODIFY,IN_NO_LOOP /scripts/createvhost.pl $#' >>/var/spool/incron/root
               echo '/usr/local/varnish/varnish_restart IN_CREATE,IN_NO_LOOP /scripts/restartcheck' >>/var/spool/incron/root
               /etc/init.d/incrond restart >/dev/null 2>&1
+              /sbin/chkconfig incrond on
               /etc/init.d/crond restart >/dev/null 2>&1
 clear
 echo -e "$GREEN Building varnish configuration files $RESET"
