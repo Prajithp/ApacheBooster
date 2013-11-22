@@ -50,6 +50,15 @@ fi
 if [ -e "/usr/local/cpanel/Cpanel/ApacheBooster.pm" ]; then
    rm -rvf /usr/local/cpanel/Cpanel/ApacheBooster.pm
 fi
+if [ -e "/scripts/incron_apachebooster" ]; then
+   rm -rvf /scripts/incron_apachebooster
+fi
+
+sed -i '/nobody*/d' /etc/security/limits.d/90-nproc.conf
+if [ -f "/etc/security/limits.conf.backup" ]; then
+   mv -f  /etc/security/limits.conf.backup  /etc/security/limits.conf
+fi
+
 rm -rvf /scripts/restartsrv_varnish
 rm -rvf /scripts/csf_fix.pl
 rm -rvf /scripts/after_apache_make_install
@@ -85,9 +94,9 @@ if [ -f "/etc/munin/plugins/apache_accesses" ]; then
 fi
 
 unset mv
-cat /var/spool/cron/root | egrep -v "nginx_client" > /tmp/cron.tmp
+cat /var/spool/cron/root | egrep -v "checkuserdomains|restartcheck|tmpwatch" > /tmp/cron.tmp
 mv -f /tmp/cron.tmp /var/spool/cron/root
-cat /var/spool/incron/root | egrep -v "createvhost.pl|restartcheck" > /var/spool/incron/root
+cat /var/spool/incron/root | egrep -v "incron_apachebooster|createvhost.pl|restartcheck" > /var/spool/incron/root
 
 if [ -f "/usr/local/cpanel/bin/manage_hooks" ]; then
    /usr/local/cpanel/bin/manage_hooks  del script /scripts/postwwwacct_apachebooster --describe "Apachebooster" --category Whostmgr --event Accounts::Create --stage post >/dev/null 2>&1

@@ -1,16 +1,45 @@
-#!/bin/bash
-# apachebooster - getfilettl                            Copyright(c) 2011 Ndimensionz, Inc.
-#                                                           All rights Reserved.
-# prajithpalakkuda@gmail.com                                       http://ndimensionz.com http://esupports.net
-# This code is subject to the GPL  license. Unauthorized copying is prohibited
+#!/usr/bin/perl
 
-if [ "$1" = "-d" ]; then
-static_file=`cat /usr/local/varnish/etc/varnish/static_file.vcl|awk '/=/ {print $4}'|sed 's/;//g'`
-echo "$static_file"
-elif [ "$1" = "-f" ]; then
-dynamec_file=`cat /usr/local/varnish/etc/varnish/dynamic_file.vcl|awk '/=/ {print $4}'|sed 's/;//g'`
-echo "$dynamec_file"
-elif [ "$1" = "-b" ]; then
-bin_value=`cat /etc/sysconfig/varnish|grep "DAEMON_OPTS="|awk '/varnish_storage.bin/ {print $24}'|cut -d, -f3`
-echo "$bin_value"
-fi
+
+my $option = $ARGV[0];
+
+print get_sys_value() if $option eq '-b';
+print get_static_ttl() if $option eq '-d';
+print get_dynamic_ttl() if $option eq '-f';
+
+sub get_sys_value {
+  my $file = '/etc/sysconfig/varnish';
+  open(my $FH, '<', $file) or die $!;
+  my @content = <$FH>;
+  close($HF);
+  my $bin_val;
+  foreach $line (@content) {
+    next unless $line =~ /DAEMON_OPTS=(.*)/;
+    my @split = split('\-s(.*),', $line );
+    print Dumper @split;
+    $bin_val = $split[2];
+    $bin_val =~ s/[^0-9A-Z]//g;
+  }
+  return  $bin_val;
+}
+
+sub get_static_ttl {
+  my $file = '/usr/local/varnish/etc/varnish/static_file.vcl';
+  open(my $FH, '<', $file) or die $!;
+  my $content = <$FH>;
+  close($HF);
+  my (undef, $ttl) = split('=', $content );
+  $ttl =~ s/[^0-9a-z]//g;
+  return $ttl;
+}
+
+sub get_dynamic_ttl {
+    my $file = '/usr/local/varnish/etc/varnish/dynamic_file.vcl';
+  open(my $FH, '<', $file) or die $!;
+  my $content = <$FH>;
+  close($HF);
+  my (undef, $ttl) = split('=', $content );
+  $ttl =~ s/[^0-9a-z]//g;
+  return $ttl;
+}
+

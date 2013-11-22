@@ -2,6 +2,7 @@
 
 BEGIN { unshift @INC, '/usr/local/cpanel'; }
 
+use Cpanel::WildcardDomain ();
 use Cpanel::ApacheBooster;
 use IO::Select;
 use JSON::Syck;
@@ -9,11 +10,22 @@ use Data::Dumper;
 
 
 my $username = get_passed_data();
-if ($username) {
-  my $domain = Cpanel::ApacheBooster::get_domain_by_username($username);
-  my $domain_conf = '/usr/local/nginx/vhost/' . $domain . '.conf';
-  if ( -f $domain_conf ) {
-    unlink("$domain_conf");
+
+if (-f '/var/cpanel/users/' . $username) {
+  my $main_domain = Cpanel::ApacheBooster::get_domain_by_username($username);
+  my $sub_domains = Cpanel::ApacheBooster::get_subdomain($username);
+  if ($main_domain) {
+    my $domain_conf = '/usr/local/nginx/vhost/' . $main_domain . '.conf';
+    unlink("$domain_conf") if -e $domain_conf;
+    if (scalar(@{$sub_domains})) {
+      foreach my $subdomain (@{$sub_domains}) {
+        if (Cpanel::WildcardDomain::is_wildcard_domain($subdomain)) {
+           $subdomain = Cpanel::WildcardDomain::encode_wildcard_domain($subdomain);
+        }
+        my $domain_conf = '/usr/local/nginx/vhost/' . $subdomain . '.conf';
+        unlink("$domain_conf") if -e $domain_conf;
+      }
+    }
   }
 }
 

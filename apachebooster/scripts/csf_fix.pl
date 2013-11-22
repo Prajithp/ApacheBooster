@@ -61,7 +61,7 @@ sub loadcsfconfig {
                 if ($value =~ /\"(.*)\"/) {
                         $value = $1;
                 } else {
-                        &error(__LINE__,"Invalid configuration line");
+                        die "Invalid configuration line";
                 }
                 $config{$name} = $value;
                 $configsetting{$name} = 1;

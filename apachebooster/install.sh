@@ -7,7 +7,6 @@ bin_mkdir=`which mkdir`
 bin_cp=`which cp`
 bin_mv=`which mv`
 bin_rm=`which rm`
-dos2unix=`which dos2unix`
 nginx_prefix="/usr/local/nginx"
 varnish_prefix="/usr/local/varnish"
 RED='\033[01;31m'
@@ -53,7 +52,7 @@ exit_code()
 echo -e "$GREEN Installing tmpwatch mailx zlib-devel pcre-devel openssl-devel $RESET"
                  yum -y install tmpwatch mailx  zlib-devel pcre-devel openssl-devel dos2unix >/dev/null 2>&1
 clear
-
+dos2unix=`which dos2unix`
 if  which incrond > /dev/null 2>&1
             then
             echo " $GREEN Found an existing incron installation .. $RESET "
@@ -172,6 +171,8 @@ echo -e "$GREEN Checking for previous installation .. $RESET"
                echo -e "$GREEN ApacheBooster already installed $RESET"
 clear
 echo -e "$GREEN Removing olde version $RESET"
+               /etc/init.d/varnish stop
+               /etc/init.d/nginx stop
                if [ -f "/usr/local/cpanel/whostmgr/cgi/addon_ApacheBooster.cgi" ]; then
                     $bin_rm -rvf /usr/local/cpanel/whostmgr/cgi/addon_ApacheBooster.cgi
                     $bin_rm -rvf /usr/local/cpanel/whostmgr/cgi/ApacheBooster
@@ -196,8 +197,9 @@ echo -e "$GREEN Removing olde version $RESET"
                if [ -f "/scripts/installmodremoteip" ]; then
                   $bin_rm -rvf /scripts/installmodremoteip
                fi
-               $bin_rm -rvf /scripts/installnginx
-               $bin_rm -rvf /scripts/posteasyapache
+               if [ -e "/scripts/incron_apachebooster" ]; then
+                  rm -rvf /scripts/incron_apachebooster
+               fi
                $bin_rm -rvf /scripts/preeasyapache
                $bin_rm -rvf /scripts/rebuildnginxconf
                $bin_rm -rvf /scripts/rebuildvhost
@@ -223,6 +225,10 @@ echo -e "$GREEN Removing olde version $RESET"
                $bin_rm -rvf /usr/local/cpanel/hooks/park/unpark
                $bin_rm -rvf $nginx_prefix
                $bin_rm -rvf $varnish_prefix
+               sed -i '/nobody*/d' /etc/security/limits.d/90-nproc.conf
+               if [ -f "/etc/security/limits.conf.backup" ]; then
+                  $bin_mv -f  /etc/security/limits.conf.backup  /etc/security/limits.conf
+               fi
                if [ -f "/usr/local/cpanel/bin/manage_hooks" ]; then
 	          /usr/local/cpanel/bin/manage_hooks  del script /scripts/postwwwacct_apachebooster --describe "Apachebooster" --category Whostmgr --event Accounts::Create --stage post >/dev/null 2>&1
                   /usr/local/cpanel/bin/manage_hooks  del script /scripts/prekillacct_apachebooster --describe "Apachebooster" --category Whostmgr --event Accounts::Remove --stage pre >/dev/null 2>&1
@@ -231,6 +237,7 @@ echo -e "$GREEN Removing olde version $RESET"
               fi
                cat /var/spool/cron/root | egrep -v "checkuserdomains|restartcheck|tmpwatch" > /tmp/cron.tmp
                mv -f /tmp/cron.tmp /var/spool/cron/root
+               cat /var/spool/incron/root | egrep -v "incron_apachebooster|createvhost.pl|restartcheck" > /var/spool/incron/root
 clear
 echo -e "$GREEN Installing scripts $RESET"
                cd $CUDIR
@@ -325,16 +332,16 @@ echo -e "$GREEN startig nginx installation $RESET"
 echo -e "$GREEN Nginx installation completed $RESET"
 clear
 echo -e "$GREEN Rising system file descriptors $RESET"
-			sed -i 's/1024/10240/g' /etc/security/limits.d/90-nproc.conf
-			echo -e "$RED Default /etc/security/limits.conf will be saved as /etc/security/limits.conf.backup $RESET"
-			sleep 2
-			$bin_cp /etc/security/limits.conf /etc/security/limits.conf.backup
-			echo "nobody soft nofile 32768" >>/etc/security/limits.conf
-			echo "nobody hard nofile 32768" >>/etc/security/limits.conf
-			echo "root soft nofile 32768" >>/etc/security/limits.conf
-			echo "root hard nofile 32768" >>/etc/security/limits.conf
+	       echo "nobody       soft    nproc     10240" >> /etc/security/limits.d/90-nproc.conf
+               echo -e "$RED Default /etc/security/limits.conf will be saved as /etc/security/limits.conf.backup $RESET"
+               sleep 2
+	       $bin_cp /etc/security/limits.conf /etc/security/limits.conf.backup
+	       echo "nobody soft nofile 32768" >>/etc/security/limits.conf
+	       echo "nobody hard nofile 32768" >>/etc/security/limits.conf
+	       echo "root soft nofile 32768" >>/etc/security/limits.conf
+	       echo "root hard nofile 32768" >>/etc/security/limits.conf
 clear
-			echo -e "$GREEN startig varnish installation $RESET"
+echo -e "$GREEN startig varnish installation $RESET"
               cd $CUDIR/packages/
               tar -zxf docutils-0.7.tar.gz
               cd docutils-0.7/
@@ -362,7 +369,7 @@ clear
 echo -e "$GREEN Creating cron $RESET"
               $bin_cp -prf /var/spool/cron/root /var/spool/cron/root-bak
               echo "0 */4 * * * /usr/sbin/tmpwatch -am 4 /tmp/nginx_client" >> /var/spool/cron/root
-              echo '/var/cpanel/users IN_MODIFY,IN_NO_LOOP /scripts/createvhost.pl $#' >>/var/spool/incron/root
+              echo '/var/cpanel/users IN_MODIFY,IN_NO_LOOP /scripts/incron_apachebooster $#' >>/var/spool/incron/root
               echo '/usr/local/varnish/varnish_restart IN_CREATE,IN_NO_LOOP /scripts/restartcheck' >>/var/spool/incron/root
               /etc/init.d/incrond restart >/dev/null 2>&1
               /sbin/chkconfig incrond on

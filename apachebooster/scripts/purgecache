@@ -10,6 +10,7 @@ do
 echo "<pre>$domain              DONE</br>"
 done
 if [ -e "/usr/local/varnish/var/varnish/varnish_storage.bin" ]; then
-rm -rf /usr/local/varnish/var/varnish/varnish_storage.bin
+   rm -rf /usr/local/varnish/var/varnish/varnish_storage.bin
 fi
+
 touch /usr/local/varnish/varnish_restart/restart.file

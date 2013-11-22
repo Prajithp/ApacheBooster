@@ -14,6 +14,8 @@ if (-e "/usr/local/varnish/etc/varnish/exclude.vhost.tpl") {
 open (MYFILE, '/usr/local/varnish/etc/varnish/exclude.vhost.tpl');
  while (<MYFILE>) {
         chomp;
+        next if $_ =~ m/^\s*(?:#.*)?$/;
+        next unless $_ =~ m/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,4}$/i; 
         my $vhost = "$_";
         chomp $vhost;
  $vhost =~ s/\r//g;

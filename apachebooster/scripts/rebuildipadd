@@ -4,15 +4,35 @@
 # prajithpalakkuda@gmail.com                                       http://ndimensionz.com http://esupports.net
 # This code is subject to the GPL  license. Unauthorized copying is prohibited
 
-IP_LIST=$(for i in `/sbin/ifconfig | grep Bcast | awk '{ print $2}' |cut -d ":" -f2` ; do echo -ne "$i " ; done)
-if [ -f "/usr/local/apache/conf/mod_rpaf.conf" ]; then
-rm -rf /usr/local/apache/conf/mod_rpaf.conf
-fi
-cat > /usr/local/apache/conf/mod_rpaf.conf << EOF
+HTTPD_VER=`/usr/local/apache/bin/httpd -v| grep "Server version:"|cut -d "/" -f2|awk '{print $1}'|cut -d "." -f1,2`
+
+if [ "$HTTPD_VER" = "2.4" ]; then
+  if [ -f "/usr/local/apache/conf/mod_rpaf.conf" ]; then
+    rm -rf /usr/local/apache/conf/mod_rpaf.conf
+  fi
+  /scripts/rebuildippool > /dev/null 2>&1
+  LIST=$(/scripts/ipusage | awk '{print $1}' | while read ip; do echo -ne "ReverseProxyRemoteIPTrusted ${ip}\n"; done)
+  cat > /usr/local/apache/conf/mod_rpaf.conf << EOF
+LoadModule reverseproxy_module modules/mod_reverseproxy.so
+<IfModule reverseproxy_module>
+  ReverseProxyEnable On
+  ReverseProxyRemoteIPHeader X-Real-IP
+  ReverseProxyRemoteIPTrusted 127.0.0.1
+  $LIST
+</IfModule>
+EOF
+
+else 
+  if [ -f "/usr/local/apache/conf/mod_rpaf.conf" ]; then
+    rm -rf /usr/local/apache/conf/mod_rpaf.conf
+  fi
+  /scripts/rebuildippool > /dev/null 2>&1
+  LIST=$(/scripts/ipusage | awk '{print $1}'|while read ip; do echo -ne "${ip} "; done)
+  cat > /usr/local/apache/conf/mod_rpaf.conf << EOF
 LoadModule rpaf_module        modules/mod_rpaf-2.0.so
 RPAFenable On
-RPAFproxy_ips $IP_LIST
+RPAFproxy_ips $LIST
 RPAFsethostname On
 RPAFheader X-Real-IP
 EOF
-
+fi

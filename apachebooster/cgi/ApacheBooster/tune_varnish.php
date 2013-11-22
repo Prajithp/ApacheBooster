@@ -10,15 +10,15 @@ define(FD_ERR, 2);        # stderr
 
 
 function retrieve_current_ttl() {
-	tune_varnish("/bin/bash /scripts/getfilettl -f");
+	tune_varnish("/scripts/getfilettl -f");
 }
 
 function retrieve_current_static_ttl() {
-	tune_varnish("/bin/bash /scripts/getfilettl -d");
+	tune_varnish("/scripts/getfilettl -d");
 }
 
 function retrieve_current_bin() {
-	tune_varnish("/bin/bash /scripts/getfilettl -b");
+	tune_varnish("/scripts/getfilettl -b");
 }
 
 
@@ -157,22 +157,22 @@ $fh = fopen("/usr/local/varnish/varnish_restart/restart.file",'w' );
 fwrite($fh,1);
 fclose($fh);
 	if(isset($_POST['ttl'])) {
-		tune_varnish("/bin/bash /scripts/adjustwrap -cd " .  $_POST['ttl']);
+		tune_varnish("/scripts/adjustwrap -cd " .  $_POST['ttl']);
 		echo "<meta http-equiv=refresh content=\"0; URL=tune_varnish.php\">";
 	}
         if(isset($_POST['bin'])) {
-                tune_varnish("/bin/bash /scripts/adjustwrap -cb " .  $_POST['bin']);
+                tune_varnish("/scripts/adjustwrap -cb " .  $_POST['bin']);
 		echo "<meta http-equiv=refresh content=\"0; URL=tune_varnish.php\">";
         }
         if(isset($_POST['staticttl'])) {
-                tune_varnish("/bin/bash /scripts/adjustwrap -cs " .  $_POST['staticttl']);
+                tune_varnish("/scripts/adjustwrap -cs " .  $_POST['staticttl']);
                 echo "<meta http-equiv=refresh content=\"0; URL=tune_varnish.php\">";
         }
  if(isset($_POST['newd'])) {
            $fh = fopen("/usr/local/varnish/etc/varnish/exclude.url.tpl",'w' );
 fwrite($fh,$_POST['newd']);
 fclose($fh);
- tune_varnish("/bin/bash /scripts/varnishurlexlude");
+ tune_varnish("/scripts/varnishurlexlude");
 echo "<meta http-equiv=refresh content=\"0; URL=tune_varnish.php\">";
 }
 }

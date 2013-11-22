@@ -8,11 +8,20 @@ use JSON::Syck;
 use Data::Dumper;
 
 
-my $domain = get_passed_data();
-if ($domain) {
-  system("/scripts/createvhost.pl $domain");
-}
+my $username = get_passed_data();
 
+if (-f '/var/cpanel/users/' . $username) {
+  my $main_domain = Cpanel::ApacheBooster::get_domain_by_username($username);
+  my $sub_domains = Cpanel::ApacheBooster::get_subdomain($username);
+  if ($main_domain) {
+    system("/scripts/createvhost.pl $main_domain");
+    if (scalar(@{$sub_domains})) {
+      foreach my $subdomain (@{$sub_domains}) {
+        system("/scripts/createvhost.pl $subdomain");
+      }
+    }
+  }
+}
 
 sub get_passed_data {
     my $raw_data   = '';
@@ -25,8 +34,8 @@ sub get_passed_data {
         }
         $input_data = JSON::Syck::Load($raw_data);
     }
-    my $domain_name = $input_data->{data}->{domain};
-    return $domain_name;
+    my $user_name = $input_data->{data}->{user};
+    return $user_name;
 }
 
 

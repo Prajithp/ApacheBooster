@@ -7,7 +7,7 @@ $host = $argv[1];
   $port = "8082";
  
   $timeout = 1;
- 
+  $verbose = 1; 
   # inits
   $sock = fsockopen ($ip,$port,$errno, $errstr,$timeout);
   if (!$sock) { echo "connections failed $errno $errstr"; exit; }
