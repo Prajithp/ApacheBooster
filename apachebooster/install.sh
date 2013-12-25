@@ -50,7 +50,7 @@ exit_code()
 }
 
 echo -e "$GREEN Installing tmpwatch mailx zlib-devel pcre-devel openssl-devel $RESET"
-                 yum -y install tmpwatch mailx  zlib-devel pcre-devel openssl-devel dos2unix libedit-dev  >/dev/null 2>&1
+                 yum -y install tmpwatch mailx  zlib-devel pcre-devel openssl-devel dos2unix libedit-devel  >/dev/null 2>&1
 clear
 dos2unix=`which dos2unix`
 if  which incrond > /dev/null 2>&1
