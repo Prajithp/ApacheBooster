@@ -341,7 +341,7 @@ echo -e "$GREEN Rising system file descriptors $RESET"
 	       echo "root soft nofile 32768" >>/etc/security/limits.conf
 	       echo "root hard nofile 32768" >>/etc/security/limits.conf
 clear
-echo -e "$GREEN startig varnish installation $RESET"
+echo -e "$GREEN starting varnish installation $RESET"
               cd $CUDIR/packages/
               tar -zxf docutils-0.7.tar.gz
               cd docutils-0.7/
