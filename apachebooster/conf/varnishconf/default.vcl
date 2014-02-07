@@ -74,9 +74,14 @@ if (req.http.Cookie ~ "^\s*$") {
 }
 
 
-    if (req.http.Authorization || req.http.Cookie) {
+if (req.http.Authorization || req.http.Cookie) {
         return (pass);
-    }
+}
+
+# don't cache ajax requests
+if (req.http.X-Requested-With == "XMLHttpRequest" || req.url ~ "nocache" || req.url ~ "(control.php|wp-comments-post.php|wp-login.php|register.php)") {
+  return (pass);
+} 
  
 set req.url = regsub(req.url, "\.js\?.*", ".js");
 set req.url = regsub(req.url, "\.css\?.*", ".css");
