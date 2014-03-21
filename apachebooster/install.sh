@@ -36,7 +36,7 @@ fi
  
 clear
 echo -e "$GREEN          ************************************************************$RESET"
-echo -e "$GREEN          *$RESET$WHITE      ApacheBooster Installation V 2.1          $GREEN*$RESET"
+echo -e "$GREEN          *$RESET$WHITE      ApacheBooster Installation V 2.2          $GREEN*$RESET"
 echo -e "$GREEN          *$RESET$WHITE   Copyright (c) 2012-2013  https://www.prajith.in/     $GREEN*$RESET"
 echo -e "$GREEN          ************************************************************$RESET"
 echo " "
@@ -203,6 +203,9 @@ echo -e "$GREEN Removing olde version $RESET"
                $bin_rm -rvf /scripts/preeasyapache
                $bin_rm -rvf /scripts/rebuildnginxconf
                $bin_rm -rvf /scripts/rebuildvhost
+               $bin_rm -rvf /scripts/nginxvhostexclude
+               $bin_rm -rvf /scripts/vhostexclude
+               $bin_rm -rvf /scripts/varnishvhostexclude
                $bin_rm -rvf /etc/ini.d/nginx
                $bin_rm -rvf /etc/init.d/varnish
                $bin_rm -rvf /etc/sysconfig/varnish

@@ -1,7 +1,7 @@
 #!/bin/bash
 /etc/init.d/varnish stop
 /etc/init.d/nginx stop
-ps aux|grep nginx|grep -v grep|awk '{print $2}'|xargs kill -9 
+ps aux|grep nginx|grep -v grep|awk '{print $2}'|xargs kill -9 >/dev/null 2>&1 
 /scripts/preeasyapache
 rm -rf /usr/local/nginx/
 rm -rf /usr/local/varnish/
@@ -44,6 +44,9 @@ rm -rvf /scripts/createvhost.pl
 rm -rvf /scripts/installmodrpaf
 rm -rvf /scripts/account_modify_pre_apachebooster
 rm -rvf /scripts/account_modify_post_apachebooster
+rm -rvf /scripts/varnishvhostexclude
+rm -rvf /scripts/nginxvhostexclude
+rm -rvf /scripts/vhostexclude
 if [ -e "/scripts/ApacheBooster.pm" ]; then
    rm -rvf /scripts/ApacheBooster.pm
 fi

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ -f "/scripts/varnishvhostexclude" ]; then
+  /scripts/varnishvhostexclude
+fi
+
+if [ -f "/scripts/nginxvhostexclude" ]; then
+  /scripts/nginxvhostexclude
+fi

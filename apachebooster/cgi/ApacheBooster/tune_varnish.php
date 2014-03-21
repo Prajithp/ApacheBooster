@@ -143,7 +143,7 @@ echo $line;
 
 <P>
 <form action="listaccts.cgi" method="GET">
-<strong><font color="#0570b9">Exclude Domain from varnish caching </font></strong> <input type="submit" name="submit" value="Show Now">
+<strong><font color="#0570b9">Exclude Domain from Apachebooster </font></strong> <input type="submit" name="submit" value="Show Now">
 </form>
 </p>
 

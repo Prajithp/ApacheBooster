@@ -32,7 +32,7 @@ function Nginx_status($status){
 <div  id="contentimg" style="float:left;"><a href="confediter.php"><img width="45px" height="45px" src="./images/advanced.png" alt="alt" border="0"/></a><br/><a href="confediter.php" >Nginx Conf Editor</a></div>
 <div  id="contentimg" style="float:left;"><a href="varnishconfediter.php"><img width="45px" height="45px" src="./images/veditor.png" alt="alt" border="0"/></a><br/><a href="varnishconfediter.php" >Varnish Conf Editor</a></div>
 
-<div  id="contentimg" style="float:left;"><a href="tune_varnish.php"><img width="45px" height="45px"  src="./images/tune.png" alt="alt" border="0"/></a><br/><a href="tune_varnish.php" >Varnish Tunner</a></div>
+<div  id="contentimg" style="float:left;"><a href="tune_varnish.php"><img width="45px" height="45px"  src="./images/tune.png" alt="alt" border="0"/></a><br/><a href="tune_varnish.php" >ApacheBooster Tunner</a></div>
 <div  id="contentimg" style="float:left;"><a href="rebuild_ip.php"><img width="45px" height="45px"  src="./images/rebuildip.png" alt="alt" border="0"/></a><br/><a href="rebuild_ip.php" >Rebuild IP Pool</a></div>
 <div  id="contentimg" style="float:left;"><a href="stats.php"><img width="45px" height="45px" src="./images/stats.png" alt="alt" border="0"/></a><br/><a href="stats.php" >Show connection stats</a></div>
 <div  id="contentimg" style="float:left;"><a href="purge_varnish.php"><img width="45px" height="45px" src="./images/time.png" alt="alt" border="0"/></a><br/><a href="purge_varnish.php" >Purge Varnish Cache</a></div>

@@ -33,17 +33,17 @@ if ($ENV{'REQUEST_METHOD'} eq "POST")
     $value =~ s/%(..)/pack("C", hex($1))/eg;
     $FORM{$name} = $value;
     $disable = $FORM{tmps};
-    if ($disable ) 
+    if ( $disable ) 
     {
       @disable = split(',', $disable);
       foreach my $val (@disable) {
       print FILEE "$val\n";
     }
-    `/scripts/varnishvhostexclude`;
+    `/scripts/vhostexclude`;
     } 
     else 
     { 
-      `/scripts/varnishvhostexclude`; 
+      `/scripts/vhostexclude`; 
     }
   }
   close FILEE;
@@ -136,7 +136,7 @@ function addOption(theSel,theText,theValue){
 HTML
 print <<HTML1;
 <div class="content1">
-<h3><font color="#0570b9">Exclude url's and files from varnish caching</font</h3>
+<h3><font color="#0570b9">Exclude Domain's from VARNISH and NGINX caching</font</h3>
  <form name="form1" method="post" action="listaccts.cgi" onsubmit="return frmCheck();">
     <table class="form" cellpadding="3" cellspacing="1">
       <tr>
