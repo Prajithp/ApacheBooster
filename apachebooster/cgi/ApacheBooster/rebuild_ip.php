@@ -1,4 +1,5 @@
 <?php
+if ($_SERVER['REMOTE_USER'] != "root" ) { print "permission denied"; exit;}
 function rebuild($cmd){
 $handle = popen("$cmd", 'r');
 while(!feof($handle)) {

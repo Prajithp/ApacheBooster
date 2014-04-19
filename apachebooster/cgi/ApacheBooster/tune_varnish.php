@@ -1,5 +1,8 @@
 <?php
 
+
+if ($_SERVER['REMOTE_USER'] != "root" ) { print "permission denied"; exit;}
+
 error_reporting(1);
 define(BUF_SIZ, 2048);        # max buffer size
 define(FD_WRITE, 0);        # stdin
@@ -157,15 +160,15 @@ $fh = fopen("/usr/local/varnish/varnish_restart/restart.file",'w' );
 fwrite($fh,1);
 fclose($fh);
 	if(isset($_POST['ttl'])) {
-		tune_varnish("/scripts/adjustwrap -cd " .  $_POST['ttl']);
+		tune_varnish("/scripts/adjustwrap -cd " .  escapeshellarg($_POST['ttl']));
 		echo "<meta http-equiv=refresh content=\"0; URL=tune_varnish.php\">";
 	}
         if(isset($_POST['bin'])) {
-                tune_varnish("/scripts/adjustwrap -cb " .  $_POST['bin']);
+                tune_varnish("/scripts/adjustwrap -cb " .  escapeshellarg($_POST['bin']));
 		echo "<meta http-equiv=refresh content=\"0; URL=tune_varnish.php\">";
         }
         if(isset($_POST['staticttl'])) {
-                tune_varnish("/scripts/adjustwrap -cs " .  $_POST['staticttl']);
+                tune_varnish("/scripts/adjustwrap -cs " .  escapeshellarg($_POST['staticttl']));
                 echo "<meta http-equiv=refresh content=\"0; URL=tune_varnish.php\">";
         }
  if(isset($_POST['newd'])) {

@@ -22,4 +22,4 @@ NFILES=131072
 # Listen on port 6081, administration on localhost:6082, and forward to
 # content server on localhost:8080.  Use a fixed-size cache file.
 #
-DAEMON_OPTS="-P /usr/local/varnish/var/run/varnish.pid -a :8082 -T localhost:6082  -f /usr/local/varnish/etc/varnish/default.vcl -p thread_pools=3 -p thread_pool_min=80 -p thread_pool_max=3000 -p thread_pool_add_delay=2 -p sess_workspace=65536  -u varnish -g varnish -s file,/usr/local/varnish/var/varnish/varnish_storage.bin,128M"
+DAEMON_OPTS="-P /usr/local/varnish/var/run/varnish.pid -a :8082 -T localhost:6082  -f /usr/local/varnish/etc/varnish/default.vcl -p thread_pools=3 -p thread_pool_min=80 -p thread_pool_max=3000 -p thread_pool_add_delay=2 -p sess_workspace=65536 -S /usr/local/varnish/etc/varnish/secret -u varnish -g varnish -s file,/usr/local/varnish/var/varnish/varnish_storage.bin,256M"
