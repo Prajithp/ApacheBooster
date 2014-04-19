@@ -1,6 +1,5 @@
-
 <?php
-
+if ($_SERVER['REMOTE_USER'] != "root" ) { print "permission denied"; exit;}
 
 function Nginx_status($status){
         $handle = popen("$status", 'r');

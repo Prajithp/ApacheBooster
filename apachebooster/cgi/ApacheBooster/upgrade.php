@@ -1,4 +1,5 @@
 <?php
+if ($_SERVER['REMOTE_USER'] != "root" ) { print "permission denied"; exit;}
 $RVERSION = `/usr/bin/curl -s http://prajith.in/version.txt`;
 $LVERSION = `/bin/cat /usr/local/cpanel/whostmgr/cgi/ApacheBooster/version.txt`;
 ?>

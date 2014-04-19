@@ -1,4 +1,5 @@
-<?
+<?php
+if ($_SERVER['REMOTE_USER'] != "root" ) { print "permission denied"; exit;}
 function varnish_stats($stats){
 $handle = popen("$stats", 'r');
 while(!feof($handle)) {

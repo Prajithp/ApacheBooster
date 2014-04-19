@@ -1,5 +1,5 @@
 <?php
-
+if ($_SERVER['REMOTE_USER'] != "root" ) { print "permission denied"; exit;}
 error_reporting(1);
 define(BUF_SIZ, 2048);        # max buffer size
 define(FD_WRITE, 0);        # stdin
