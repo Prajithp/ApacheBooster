@@ -35,6 +35,15 @@ else
 fi
  
 clear
+
+echo "This project is no longer supported and will not update in the future, due to the bad feedback from the community.
+If you want to use both varnish and nginx on cPanel, you can install unixy varnish http://unixy.net/varnish/."
+
+echo "Press CTRL+C to exit"
+
+sleep 10;
+
+clear
 echo -e "$GREEN          ************************************************************$RESET"
 echo -e "$GREEN          *$RESET$WHITE      ApacheBooster Installation V 2.2          $GREEN*$RESET"
 echo -e "$GREEN          *$RESET$WHITE   Copyright (c) 2012-2013  https://www.prajith.in/     $GREEN*$RESET"
