@@ -361,6 +361,13 @@ echo -e "$GREEN starting varnish installation $RESET"
                   echo  "varnish installation failed"
                   exit 1
                fi
+              if [ -x "/usr/bin/uuidgen" ]; then
+                /usr/bin/uuidgen > /usr/local/varnish/etc/varnish/secret
+              else
+                RAND=$(perl -le "print map { ('a'..'z', 'A'..'Z', '0'..'9')[rand 62] } 1..42")
+                echo ${RAND} > /usr/local/varnish/etc/varnish/secret
+              fi
+              chmod 600 /usr/local/varnish/etc/varnish/secret
               $bin_rm -rvf /usr/local/varnish/etc/varnish/default.vcl
               $bin_cp -pvr $CUDIR/conf/varnishconf/*  /usr/local/varnish/etc/varnish/
               $bin_cp -pvr $CUDIR/conf/varnish /etc/init.d/varnish
