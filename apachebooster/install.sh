@@ -36,11 +36,10 @@ fi
  
 clear
 
-echo "This project is no longer supported and will not update in the future, due to the bad feedback from the community.
+echo "This project is no longer supported and will not update in the future.
 If you want to use both varnish and nginx on cPanel, you can install unixy varnish http://unixy.net/varnish/."
 
 echo "Press CTRL+C to exit"
-
 sleep 10;
 
 clear
