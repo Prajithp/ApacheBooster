@@ -1,4 +1,4 @@
-####This project is no longer supported and will not update in the future, due to the bad feedback from the community. If you want to use both varnish and nginx on cPanel, you can install unixy varnish http://unixy.net/varnish/.
+####This project is no longer supported and will not update in the future. If you want to use both varnish and nginx on cPanel, you can either install unixy varnish http://unixy.net/varnish/ or the active forked version of apachebooster https://github.com/breezylinuz/ApacheBooster.git.
 
 ApacheBooster
 =============
