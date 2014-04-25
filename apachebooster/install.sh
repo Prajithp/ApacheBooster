@@ -37,7 +37,7 @@ fi
 clear
 echo -e "$GREEN          ************************************************************$RESET"
 echo -e "$GREEN          *$RESET$WHITE      ApacheBooster Installation V 2.2          $GREEN*$RESET"
-echo -e "$GREEN          *$RESET$WHITE   Copyright (c) 2012-2013  https://www.prajith.in/     $GREEN*$RESET"
+echo -e "$GREEN          *$RESET$WHITE   Copyright (c) 2012-2014  https://www.prajith.in/     $GREEN*$RESET"
 echo -e "$GREEN          ************************************************************$RESET"
 echo " "
 echo " "
@@ -85,11 +85,11 @@ fi
 clear
 echo ""
 echo ""
-echo "############################################################"
-echo "# Installing Required Perl Modules. This may take a minute.#"
-echo "# If any module installs fail, you will need to manually   #"
-echo "# install the module using CPAN or /scripts/perlinstaller. #"
-echo "############################################################"
+echo "###############################################################"
+echo "# Installing Required Perl Modules. This may take a minute.   #"
+echo "# If any module installation fails, you will need to manually #"
+echo "# install the module using CPAN or /scripts/perlinstaller.    #"
+echo "###############################################################"
 echo ""
 echo ""
 REQUIREDMODULES=( "IPC::Open3" "JSON::Syck" "Data::Dumper" "XML::DOM" "Getopt::Long" "XML::Simple" "JSON" "IO::Select" )
@@ -101,7 +101,7 @@ PERLRESULT=$( perl -MCGI -e "1" 2>&1)
 if [[ $PERLRESULT != "" ]]; then
         for i in "${REQUIREDMODULES[@]}"
         do
-                echo "installing $i"
+                echo "Installing $i"
                 echo "....."
                 perl -MCPAN -e "install $i" >/dev/null 2>&1
         done
@@ -112,7 +112,7 @@ else
           foundmodule=$(perl -M$i -e "1" 2>&1)
           if [[ "$foundmodule" != "" ]]; then
              echo "$i is NOT installed"
-                 echo "installing $i"
+                 echo "Installing $i"
                  echo "....."
                  perl -MCPAN -e "install $i" >/dev/null 2>&1
                  echo "....."
@@ -158,7 +158,7 @@ if [[ "$ALLINSTALLED" != 1 ]]; then
         echo "Support Address: prajithpalakkuda@gmail.com"
         exit 1
 else
-        echo ".....done"
+        echo ".....DONE"
 fi
 clear
 if [ ! -f "latest_cpanel.sh" ]; then
@@ -170,7 +170,7 @@ echo -e "$GREEN Checking for previous installation .. $RESET"
       if [ -d  "/usr/local/cpanel/whostmgr/cgi/ApacheBooster" -o -f "/usr/local/cpanel/whostmgr/cgi/addon_nginx.cgi" ]; then
                echo -e "$GREEN ApacheBooster already installed $RESET"
 clear
-echo -e "$GREEN Removing olde version $RESET"
+echo -e "$GREEN Removing old version $RESET"
                /etc/init.d/varnish stop
                /etc/init.d/nginx stop
                if [ -f "/usr/local/cpanel/whostmgr/cgi/addon_ApacheBooster.cgi" ]; then
@@ -290,7 +290,7 @@ echo -e "$GREEN Installing WHM/cPanel hooks $RESET"
                sed -i "s/$HTTPD -k .*/\\0\\n\\/etc\\/init.d\\/varnish \$ARGV/g" /etc/init.d/httpd
 
 clear
-echo -e "$GREEN Registering  hooks $RESET"
+echo -e "$GREEN Registering hooks $RESET"
                /usr/local/cpanel/bin/register_hooks
 
 clear         
@@ -299,7 +299,7 @@ echo -e "$GREEN Creating varnish system user $RESET"
                /usr/sbin/groupadd -g 87 varnish 
                /usr/sbin/useradd -g 87 -u 87 varnish -s /sbin/nologin
 clear
-echo -e "$GREEN startig nginx installation $RESET"
+echo -e "$GREEN starting nginx installation $RESET"
                cd $CUDIR/packages/
                tar -xf  nginx-$nVERSION.tar.gz
                tar -xf  pcre-$pcreVERSION.tar.gz
@@ -392,9 +392,9 @@ echo -e "$GREEN Building varnish configuration files $RESET"
              clear
 echo -e "$GREEN  Building Nginx Virtualhost, This may take a while $RESET"
              /scripts/createvhost.pl;
-             echo "Done....."
+             echo "DONE....."
 
-echo -e "$GREEN switching to apachebooster $RESET"
+echo -e "$GREEN Switching to apachebooster $RESET"
                if grep "apache_port"  /var/cpanel/cpanel.config  > /dev/null ; then
                   sed -i  's/apache_port=0.0.0.0:80/apache_port=0.0.0.0:82/g'  /var/cpanel/cpanel.config
                   /usr/local/cpanel/whostmgr/bin/whostmgr2 --updatetweaksettings >/dev/null 2>&1
@@ -411,7 +411,7 @@ echo -e "$GREEN switching to apachebooster $RESET"
                /scripts/rebuildnginxconf
                /scripts/rebuildhttpdconf >/dev/null 2>&1
                /scripts/restartsrv_httpd >/dev/null 2>&1
-echo -e "$GREEN starting apachebooster $RESET"
+echo -e "$GREEN Starting apachebooster $RESET"
                 ps aux|grep varnish|awk '{print $2}'|xargs kill -9 >/dev/null 2>&1
                /etc/init.d/varnish restart
                /etc/init.d/nginx restart
@@ -425,7 +425,7 @@ echo  -e "$GREEN Checking Firewall $RESET"
 clear
 echo -e "$GREEN--------------------------------------------------------------------------------------$RESET"
 echo -e "$RESET$WHITE                     Installation Completed $GREEN.$RESET"
-echo -e "$RESET$WHITE            Please Go to  WHM->PLUGIN->APACHEBOOSTER $GREEN.$RESET"
+echo -e "$RESET$WHITE            Please Go to WHM->PLUGIN->APACHEBOOSTER $GREEN.$RESET"
 echo -e "$RESET$WHITE             Please run the following command /etc/init.d/httpd restart $GREEN.$RESET"
 echo -e "$RESET$WHITE         Please feel free to contact us, if you need any help $GREEN.$RESET"
 echo -e "$RESET$WHITE                      EMAIL: prajithpalakkuda@gmail.com $GREEN.$RESET"
