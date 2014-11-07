@@ -1,8 +1,0 @@
-#!/bin/bash
-# apachebooster - preeasyapache                            Copyright(c) 2011 Ndimensionz, Inc.
-#                                                           All rights Reserved.
-# prajithpalakkuda@gmail.com                                       http://ndimensionz.com http://esupports.net
-# This code is subject to the GPL  license. Unauthorized copying is prohibited
-
-/bin/grep -v 'mod_rpaf.conf'  /usr/local/apache/conf/includes/pre_main_global.conf  > /tmp/nginx.txt
-/bin/cat /tmp/nginx.txt > /usr/local/apache/conf/includes/pre_main_global.conf
