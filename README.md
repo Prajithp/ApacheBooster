@@ -14,35 +14,3 @@ Varnish Cache is a web application accelerator also known as a caching HTTP reve
 Nginx is known for its high performance, stability, rich feature set, simple configuration, and low resource consumption.
 
 Unlike traditional servers, Nginx doesn’t rely on threads to handle requests. Instead it uses a much more scalable event-driven (asynchronous) architecture. This architecture uses small, but more importantly, predictable amounts of memory under load.
-
-
-## Installation/Upgrade instructions
-
-1. Clone the installation folder onto your CPanel server:
-```bash
-$> git clone https://github.com/Prajithp/ApacheBooster.git
-              OR
-$> wget https://github.com/Prajithp/ApacheBooster/archive/master.zip -O ApacheBooster.zip
-$> unzip ApacheBooster.zip
-```
-
-2. Change the working directory to cloned or extracted folder:
-```bash
-$> cd ApacheBooster/apachebooster
-              OR
-$> cd ApacheBooster-master/apachebooster
-```
-
-3. Execute installation script and wait for it to finish:
-```bash
-$> sh install.sh
-```
-
-## Uninstallation instructions:
-
-```bash
-1. Clone the ApacheBooster files onto your server.
-2. Change the working directory to cloned folder.
-3  execute uninstall script.
-  $> sh uninstall
-```
