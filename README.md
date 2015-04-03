@@ -1,4 +1,4 @@
-####This project is no longer supported and will not update in the future.
+####This project has been taken over by Ndimensionz.  New and bug free version of Apachebooster can be downloaded from http://ndimensionz.com/apachebooster
 
 ApacheBooster
 =============
